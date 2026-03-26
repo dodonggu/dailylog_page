@@ -27,7 +27,7 @@
 .tmp-playwright/
 .tmp-run/
 output/
-/DailyLog.apk
+/DailyLog*.apk
 
 # debug
 npm-debug.log*

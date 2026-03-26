@@ -11,9 +11,15 @@ type DownloadTarget = {
   download?: boolean;
 };
 
-const androidReleaseTag = "android-demo-v0.1.0";
-const androidReleaseAssetName = "DailyLog.apk";
-const androidReleaseAssetUrl = `https://github.com/jang961111-hash/dailylog_page/releases/download/${androidReleaseTag}/${androidReleaseAssetName}`;
+export const githubReleaseRepo = {
+  owner: "jang961111-hash",
+  name: "dailylog_page",
+} as const;
+
+const androidReleaseFallbackTag = "android-demo-v1.0.2";
+const androidReleaseFallbackAssetName = "DailyLog_1.0.2.apk";
+export const androidReleaseFallbackAssetUrl = `https://github.com/${githubReleaseRepo.owner}/${githubReleaseRepo.name}/releases/download/${androidReleaseFallbackTag}/${androidReleaseFallbackAssetName}`;
+const androidReleaseRoute = "/download/apk";
 
 export const siteConfig = {
   name: "Daily Log",
@@ -31,17 +37,17 @@ export const siteConfig = {
   releaseStatus: "live" as ReleaseStatus,
   release: {
     badge: "Android APK",
-    versionLabel: "DailyLog APK v0.1.0",
+    versionLabel: "DailyLog APK v1.0.2",
     supportedOs: "Android 10 이상 권장",
-    fileSize: "약 323MB",
-    lastUpdated: "2026-03-25",
+    fileSize: "약 335MB",
+    lastUpdated: "2026-03-26",
   },
   downloads: {
     androidApk: {
       status: "live",
-      href: androidReleaseAssetUrl,
+      href: androidReleaseRoute,
       label: "Android APK 다운로드",
-      description: "GitHub Releases에서 Daily Log APK를 바로 내려받아 핵심 체크인 흐름을 체험할 수 있습니다.",
+      description: "현재 page 폴더의 최신 Daily Log APK를 직접 내려받아 핵심 체크인 흐름을 바로 체험할 수 있습니다.",
       ctaId: "android-apk",
       download: false,
     } satisfies DownloadTarget,
