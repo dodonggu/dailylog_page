@@ -57,8 +57,8 @@ These commands use `npx vercel`, so the repo is ready even if the Vercel CLI is 
 - The landing site is deployed on Vercel.
 - Download buttons point to `/download/apk`, which serves the newest `DailyLog*.apk` file found in `release-assets/apk`.
 - If `ANDROID_APK_URL` is set in the environment, `/download/apk` redirects there first.
-- If no local APK is available, `/download/apk` tries the configured `android-demo-v1.0.12` release first, then the latest GitHub Release APK, and finally the last known asset URL.
-- Local APK files such as `DailyLog.apk` or `DailyLog_1.0.12.apk` are release source files only and must not be committed to the repository.
+- If no local APK is available, `/download/apk` tries the configured `android-demo-v1.0.13` release first, then the latest GitHub Release APK, and finally the last known asset URL.
+- Local APK files such as `DailyLog.apk` or `DailyLog_1.0.13.apk` are release source files only and must not be committed to the repository.
 - When the APK changes locally, place the new `DailyLog*.apk` file in `release-assets/apk`. GitHub Releases remain the fallback delivery path.
 - Vercel deployments should exclude `release-assets/` so production deploys stay lightweight and rely on the GitHub fallback when no local APK is bundled.
 
@@ -67,8 +67,8 @@ These commands use `npx vercel`, so the repo is ready even if the Vercel CLI is 
 For the current release, prepare GitHub and Vercel in this order:
 
 1. Push the site code to `main`.
-2. Create a GitHub Release tag named `android-demo-v1.0.12`.
-3. Upload `release-assets/apk/DailyLog_1.0.12.apk` as the release asset.
+2. Create a GitHub Release tag named `android-demo-v1.0.13`.
+3. Upload `release-assets/apk/DailyLog_1.0.13.apk` as the release asset.
 4. Connect the repository in Vercel or run `npm run vercel:link`.
 5. Deploy with `npm run vercel:preview` or `npm run vercel:prod`.
 

@@ -17,7 +17,7 @@ export const githubReleaseRepo = {
   name: "dailylog_page",
 } as const;
 
-export const androidReleaseVersion = "1.0.12";
+export const androidReleaseVersion = "1.0.13";
 export const androidReleaseFallbackTag = `android-demo-v${androidReleaseVersion}`;
 export const androidReleaseFallbackAssetName = `DailyLog_${androidReleaseVersion}.apk`;
 export const androidReleaseFallbackAssetUrl = `https://github.com/${githubReleaseRepo.owner}/${githubReleaseRepo.name}/releases/download/${androidReleaseFallbackTag}/${androidReleaseFallbackAssetName}`;

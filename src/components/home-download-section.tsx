@@ -1,19 +1,17 @@
 import { DeviceDownloadHub } from "@/components/device-download-hub";
 import { SectionHeading } from "@/components/site-shell";
-import { siteConfig, type SiteLocale } from "@/lib/site-config";
+import { androidReleaseVersion, siteConfig, type SiteLocale } from "@/lib/site-config";
 
 const sectionCopy = {
   ko: {
     eyebrow: "Install Now",
-    title: "홈페이지에서도 바로 설치 경로를 확인하고 내려받을 수 있습니다.",
-    description:
-      "현재 공개 버전은 Android APK v1.0.12입니다. 랜딩에서 바로 다운로드로 이어지고, Vercel 배포 환경에서는 GitHub Release 경로를 그대로 이어받도록 준비했습니다.",
+    title: "홈페이지에서 바로 설치 경로를 확인하고 내려받을 수 있습니다.",
+    description: `현재 공개 버전은 Android APK v${androidReleaseVersion}입니다. 랜딩에서 바로 다운로드로 이어지고, Vercel 배포 환경에서는 GitHub Release 경로를 그대로 이어받도록 준비했습니다.`,
   },
   en: {
     eyebrow: "Install Now",
     title: "The homepage now leads straight into the install flow.",
-    description:
-      "The current public build is Android APK v1.0.12. From the landing page, people can move directly into the download path, and Vercel deployments are prepared to hand off through the GitHub Release route.",
+    description: `The current public build is Android APK v${androidReleaseVersion}. From the landing page, people can move directly into the download path, and Vercel deployments are prepared to hand off through the GitHub Release route.`,
   },
 } as const;
 
