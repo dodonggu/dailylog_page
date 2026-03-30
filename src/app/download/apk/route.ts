@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 import { findLocalAndroidApk } from "@/lib/apk-release";
 import {
+  androidReleaseFallbackAssetName,
   androidReleaseFallbackAssetUrl,
   androidReleaseFallbackTag,
   githubReleaseRepo,
@@ -22,7 +23,7 @@ type GitHubRelease = {
   }>;
 };
 
-async function resolveGitHubApkRelease(url: string) {
+async function resolveGitHubApkRelease(url: string, preferredAssetName?: string) {
   const response = await fetch(url, {
     headers: {
       Accept: "application/vnd.github+json",
@@ -36,7 +37,10 @@ async function resolveGitHubApkRelease(url: string) {
   }
 
   const release = (await response.json()) as GitHubRelease;
-  const androidAsset = release.assets?.find((asset) => asset.name?.toLowerCase().endsWith(".apk"));
+  const normalizedPreferredAssetName = preferredAssetName?.toLowerCase();
+  const androidAsset =
+    release.assets?.find((asset) => asset.name?.toLowerCase() === normalizedPreferredAssetName) ??
+    release.assets?.find((asset) => asset.name?.toLowerCase().endsWith(".apk"));
 
   return androidAsset?.browser_download_url ?? null;
 }
@@ -68,13 +72,19 @@ export async function GET() {
   }
 
   try {
-    const taggedReleaseAssetUrl = await resolveGitHubApkRelease(taggedReleaseApiUrl);
+    const taggedReleaseAssetUrl = await resolveGitHubApkRelease(
+      taggedReleaseApiUrl,
+      androidReleaseFallbackAssetName,
+    );
 
     if (taggedReleaseAssetUrl) {
       return NextResponse.redirect(taggedReleaseAssetUrl);
     }
 
-    const latestReleaseAssetUrl = await resolveGitHubApkRelease(latestReleaseApiUrl);
+    const latestReleaseAssetUrl = await resolveGitHubApkRelease(
+      latestReleaseApiUrl,
+      androidReleaseFallbackAssetName,
+    );
 
     if (latestReleaseAssetUrl) {
       return NextResponse.redirect(latestReleaseAssetUrl);

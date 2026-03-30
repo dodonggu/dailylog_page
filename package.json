@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "vercel:link": "npx vercel link",
-    "vercel:preview": "npx vercel deploy",
-    "vercel:prod": "npx vercel deploy --prod"
+    "vercel:link": "npx vercel link --yes",
+    "vercel:preview": "npx vercel deploy -y",
+    "vercel:prod": "npx vercel deploy --prod -y"
   },
   "dependencies": {
     "next": "16.2.1",
