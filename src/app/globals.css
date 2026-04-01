@@ -54,6 +54,18 @@ section[id] {
   scroll-margin-top: 6rem;
 }
 
+[data-edit-highlighted="true"] {
+  position: relative;
+  outline: 3px solid rgba(34, 92, 255, 0.55);
+  outline-offset: 6px;
+  box-shadow:
+    0 0 0 8px rgba(34, 92, 255, 0.1),
+    0 22px 60px rgba(34, 92, 255, 0.12);
+  transition:
+    outline-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
 h1,
 h2,
 h3,

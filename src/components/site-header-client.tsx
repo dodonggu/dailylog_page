@@ -88,13 +88,17 @@ export function SiteHeaderClient() {
     >
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-5 py-3 sm:px-6 sm:py-4">
         <Link href={withLocale("/", locale)} className="inline-flex items-center gap-3 text-[color:var(--color-ink)]">
-          <span className="glow-orb inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[1.1rem] border border-[color:var(--color-line)] bg-white/90 shadow-[0_18px_42px_rgba(24,36,77,0.08)]">
-            <BrandMark className="h-8 w-8" label={`${siteConfig.name} logo`} priority />
+          <span className="glow-orb inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-[1.1rem] border border-[color:var(--color-line)] shadow-[0_18px_42px_rgba(24,36,77,0.08)]">
+            <BrandMark className="h-full w-full" label={`${siteConfig.name} logo`} priority />
           </span>
           <span className="flex flex-col">
             <span className="font-display text-[1.1rem] font-semibold tracking-[-0.04em] sm:text-[1.2rem]">{siteConfig.name}</span>
-            <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--color-muted)]">
-              {locale === "en" ? "Conversational Daily Journal" : "대화형 데일리 저널"}
+            <span
+              className={`whitespace-nowrap text-[9px] font-medium leading-none text-[color:var(--color-muted)] sm:text-[10px] ${
+                locale === "en" ? "tracking-[0.01em]" : "tracking-[-0.02em]"
+              }`}
+            >
+              {locale === "en" ? "Record the day through conversation." : "대화로 하루를 기록하다."}
             </span>
           </span>
         </Link>

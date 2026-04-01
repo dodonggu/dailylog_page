@@ -1,16 +1,20 @@
 import { DeviceDownloadHub } from "@/components/device-download-hub";
 import { PageCta, PageIntro, SectionHeading, SiteFooter, SiteHeader } from "@/components/site-shell";
+import { downloadPageContentEn } from "@/lib/content/download-page-content-en";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
 import { findLocalAndroidApk } from "@/lib/apk-release";
-import { downloadNotesEn, faqsEn, installStepsEn, troubleshootingEn } from "@/lib/content/support-content-en";
 import { buildMetadata, siteConfig, siteLocaleCopy } from "@/lib/site-config";
 
-export const metadata = buildMetadata({
-  title: "Download",
-  description:
-    "Download the Daily Log Android APK, scan a QR code from desktop, review supported devices, and follow the install guide in one place.",
-  path: "/en/download",
-  locale: "en",
-});
+const editPage = getEditablePage("/en/download")!;
+const introSection = getEditableSection(editPage, "download-intro")!;
+const hubSection = getEditableSection(editPage, "download-hub")!;
+const beforeInstallSection = getEditableSection(editPage, "before-install")!;
+const installStepsSection = getEditableSection(editPage, "install-steps")!;
+const troubleshootingSection = getEditableSection(editPage, "troubleshooting")!;
+const quickAnswersSection = getEditableSection(editPage, "quick-answers")!;
+const ctaSection = getEditableSection(editPage, "download-cta")!;
+
+export const metadata = buildMetadata(downloadPageContentEn.metadata);
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +31,9 @@ function formatPackageUpdatedAt(mtimeMs: number) {
 
 export default async function EnglishDownloadPage() {
   const localApk = await findLocalAndroidApk();
-  const deliverySource = localApk ? "Served directly from this server" : "GitHub Releases fallback route";
+  const deliverySource = localApk
+    ? downloadPageContentEn.intro.currentPackageCard.directSourceLabel
+    : downloadPageContentEn.intro.currentPackageCard.fallbackSourceLabel;
   const deliveryLabel = localApk ? localApk.filename : siteConfig.release.versionLabel;
   const deliveryUpdatedAt = localApk ? formatPackageUpdatedAt(localApk.mtimeMs) : siteConfig.release.lastUpdated;
   const deliverySize = localApk ? formatPackageSize(localApk.size) : siteLocaleCopy.en.fileSize;
@@ -38,9 +44,10 @@ export default async function EnglishDownloadPage() {
 
       <main lang="en" className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Download"
-          title="The install flow and the current release state stay in the same view."
-          description="On mobile, this page leads with the install action. On desktop, it keeps the QR handoff and release state together. Channels that are not ready yet are shown clearly as status only."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={downloadPageContentEn.intro.eyebrow}
+          title={downloadPageContentEn.intro.title}
+          description={downloadPageContentEn.intro.description}
           actions={
             <>
               <a
@@ -49,53 +56,65 @@ export default async function EnglishDownloadPage() {
                 data-cta-id="download-page-hero-apk-en"
                 className="button-primary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
               >
-                Download Android APK
+                {downloadPageContentEn.intro.primaryLabel}
               </a>
               <a
-                href="#install-guide"
+                href={`#${installStepsSection.targetId}`}
                 className="button-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
               >
-                View Install Steps
+                {downloadPageContentEn.intro.secondaryLabel}
               </a>
             </>
           }
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Release</p>
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(introSection, "release-card")!)}
+                className="surface-card rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {downloadPageContentEn.intro.releaseCard.label}
+                </p>
                 <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
                   {siteConfig.release.versionLabel}
                 </p>
                 <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">
                   {siteLocaleCopy.en.supportedOs}
                   <br />
-                  Package size {siteLocaleCopy.en.fileSize}
+                  {downloadPageContentEn.intro.releaseCard.packageSizeLabel} {siteLocaleCopy.en.fileSize}
                   <br />
-                  Updated {siteConfig.release.lastUpdated}
+                  {downloadPageContentEn.intro.releaseCard.updatedLabel} {siteConfig.release.lastUpdated}
                 </p>
               </div>
 
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(introSection, "package-card")!)}
+                className="surface-card-dark rounded-[1.8rem] p-6 text-white"
+              >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">Current package</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                    {downloadPageContentEn.intro.currentPackageCard.label}
+                  </p>
                   <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/72">
-                    {localApk ? "Direct" : "Fallback"}
+                    {localApk
+                      ? downloadPageContentEn.intro.currentPackageCard.directBadge
+                      : downloadPageContentEn.intro.currentPackageCard.fallbackBadge}
                   </span>
                 </div>
                 <p className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-white">{deliveryLabel}</p>
                 <div className="mt-4 grid gap-3 text-sm leading-7 text-white/72">
                   <p>
-                    Delivery path
+                    {downloadPageContentEn.intro.currentPackageCard.deliveryPathLabel}
                     <br />
                     <span className="font-medium text-white">{deliverySource}</span>
                   </p>
                   <p>
-                    Current file size
+                    {downloadPageContentEn.intro.currentPackageCard.currentFileSizeLabel}
                     <br />
                     <span className="font-medium text-white">{deliverySize}</span>
                   </p>
                   <p>
-                    Verified at
+                    {downloadPageContentEn.intro.currentPackageCard.verifiedAtLabel}
                     <br />
                     <span className="font-medium text-white">{deliveryUpdatedAt}</span>
                   </p>
@@ -107,21 +126,36 @@ export default async function EnglishDownloadPage() {
 
         <section className="px-6 py-8">
           <div className="mx-auto w-full max-w-7xl">
-            <DeviceDownloadHub locale="en" />
+            <DeviceDownloadHub
+              locale="en"
+              editAttributes={{
+                section: editableAttributes(editPage, "section", hubSection),
+                primaryCta: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-primary-cta")!),
+                playStore: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-play-store")!),
+                iosStatus: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-ios-status")!),
+                supportCard: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-support-card")!),
+                stats: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-stats")!),
+                handoff: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-handoff")!),
+              }}
+            />
           </div>
         </section>
 
-        <section id="install-guide" className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", beforeInstallSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Before Install"
-              title="Only the details that actually affect installation come first."
-              description="The page stays focused on what can block installation or change user confidence, and moves the rest of the explanation behind that."
+              eyebrow={downloadPageContentEn.beforeInstall.eyebrow}
+              title={downloadPageContentEn.beforeInstall.title}
+              description={downloadPageContentEn.beforeInstall.description}
             />
 
             <div className="grid gap-5 lg:grid-cols-3">
-              {downloadNotesEn.map((item) => (
-                <article key={item.title} className="surface-card-soft rounded-[1.8rem] p-6">
+              {downloadPageContentEn.beforeInstall.items.map((item, index) => (
+                <article
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", beforeInstallSection.children![index]!)}
+                  className="surface-card-soft rounded-[1.8rem] p-6"
+                >
                   <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h2>
                   <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">{item.description}</p>
                 </article>
@@ -130,18 +164,19 @@ export default async function EnglishDownloadPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", installStepsSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Install Steps"
-              title="The install path should stay short and consistent across devices."
-              description="Whether someone arrives from a desktop browser or a phone, the same goal and the same next step stay visible."
+              eyebrow={downloadPageContentEn.installSteps.eyebrow}
+              title={downloadPageContentEn.installSteps.title}
+              description={downloadPageContentEn.installSteps.description}
             />
 
             <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
-              {installStepsEn.map((item, index) => (
+              {downloadPageContentEn.installSteps.items.map((item, index) => (
                 <article
-                  key={item.title}
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", installStepsSection.children![index]!)}
                   className={`${index === 1 ? "surface-card-dark text-white" : "surface-card-soft"} rounded-[1.8rem] p-6`}
                 >
                   <h2 className={`font-display text-3xl font-semibold tracking-[-0.04em] ${index === 1 ? "text-white" : "text-[color:var(--color-ink)]"}`}>
@@ -156,18 +191,22 @@ export default async function EnglishDownloadPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", troubleshootingSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.96fr_1.04fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Troubleshooting"
-                title="When installation fails, the first checks should be easy to spot."
-                description="This section prioritizes the issues that appear most often during demo distribution and starts with the items people can verify on their own."
+                eyebrow={downloadPageContentEn.troubleshooting.eyebrow}
+                title={downloadPageContentEn.troubleshooting.title}
+                description={downloadPageContentEn.troubleshooting.description}
               />
 
               <div className="grid gap-4">
-                {troubleshootingEn.map((item) => (
-                  <article key={item.title} className="surface-card-soft rounded-[1.6rem] p-5">
+                {downloadPageContentEn.troubleshooting.items.map((item, index) => (
+                  <article
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", troubleshootingSection.children![index]!)}
+                    className="surface-card-soft rounded-[1.6rem] p-5"
+                  >
                     <h2 className="font-display text-2xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h2>
                     <p className="mt-3 text-sm leading-7 text-[color:var(--color-muted)]">{item.description}</p>
                   </article>
@@ -175,11 +214,17 @@ export default async function EnglishDownloadPage() {
               </div>
             </div>
 
-            <div className="surface-card rounded-[2rem] p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Quick Answers</p>
+            <div {...editableAttributes(editPage, "section", quickAnswersSection)} className="surface-card rounded-[2rem] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                {downloadPageContentEn.quickAnswers.label}
+              </p>
               <div className="mt-5 grid gap-4">
-                {faqsEn.slice(0, 4).map((item) => (
-                  <details key={item.question} className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4">
+                {downloadPageContentEn.quickAnswers.items.map((item, index) => (
+                  <details
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", quickAnswersSection.children![index]!)}
+                    className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4"
+                  >
                     <summary className="cursor-pointer list-none text-base font-semibold text-[color:var(--color-ink)]">
                       {item.question}
                     </summary>
@@ -195,13 +240,16 @@ export default async function EnglishDownloadPage() {
 
         <PageCta
           locale="en"
-          eyebrow="Next Step"
-          title="Support and policy links continue in the same design system after installation."
-          description="This page works as more than a download gate. It is also the handoff point into support and policy flows when users need them."
-          primaryHref="/support"
-          primaryLabel="View Support"
-          secondaryHref="/privacy"
-          secondaryLabel="View Policies"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={downloadPageContentEn.cta.eyebrow}
+          title={downloadPageContentEn.cta.title}
+          description={downloadPageContentEn.cta.description}
+          primaryHref={downloadPageContentEn.cta.primaryHref}
+          primaryLabel={downloadPageContentEn.cta.primaryLabel}
+          secondaryHref={downloadPageContentEn.cta.secondaryHref}
+          secondaryLabel={downloadPageContentEn.cta.secondaryLabel}
         />
       </main>
 

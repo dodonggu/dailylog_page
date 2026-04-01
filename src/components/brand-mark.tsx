@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import brandMarkImage from "@/assets/branding/dailylog-cat-header.png";
+import brandMarkImage from "@/assets/branding/logo-header.png";
 
 type BrandMarkProps = {
   className?: string;
@@ -9,12 +9,14 @@ type BrandMarkProps = {
 };
 
 export function BrandMark({ className, label, priority = false }: BrandMarkProps) {
+  const imageClassName = className ? `${className} object-cover` : "object-cover";
+
   return (
     <Image
       src={brandMarkImage}
       alt={label ?? ""}
       aria-hidden={label ? undefined : true}
-      className={className}
+      className={imageClassName}
       priority={priority}
       sizes="(max-width: 640px) 48px, 58px"
     />

@@ -1,19 +1,17 @@
 import { PageCta, PageIntro, SectionHeading, SiteFooter, SiteHeader } from "@/components/site-shell";
-import {
-  ownershipChecklistEn,
-  paidValueTracksEn,
-  roadmapPrioritiesEn,
-  validationPlansEn,
-} from "@/lib/content/roadmap-content-en";
+import { roadmapPageContentEn } from "@/lib/content/roadmap-content-en";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
 import { buildMetadata } from "@/lib/site-config";
 
-export const metadata = buildMetadata({
-  title: "Product roadmap",
-  description:
-    "See the next product priorities, validation criteria, and trust-related work that Daily Log should focus on after the current demo release.",
-  path: "/en/roadmap",
-  locale: "en",
-});
+const editPage = getEditablePage("/en/roadmap")!;
+const introSection = getEditableSection(editPage, "roadmap-intro")!;
+const diagnosisSection = getEditableSection(editPage, "current-diagnosis")!;
+const prioritiesSection = getEditableSection(editPage, "priorities")!;
+const validationSection = getEditableSection(editPage, "validation")!;
+const trustAndPaidSection = getEditableSection(editPage, "trust-and-paid")!;
+const ctaSection = getEditableSection(editPage, "roadmap-cta")!;
+
+export const metadata = buildMetadata(roadmapPageContentEn.metadata);
 
 export default function EnglishRoadmapPage() {
   return (
@@ -22,61 +20,63 @@ export default function EnglishRoadmapPage() {
 
       <main lang="en" className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Roadmap"
-          title="The next step is not a prettier demo, but a product people return to."
-          description="This roadmap focuses on repeat value and accumulated reflection instead of surface polish. The page is organized so the reason behind the sequence is visible before the feature list itself."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={roadmapPageContentEn.intro.eyebrow}
+          title={roadmapPageContentEn.intro.title}
+          description={roadmapPageContentEn.intro.description}
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Current View</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  First make it worth trying.
-                  <br />
-                  Then make it worth reopening.
-                </p>
-                <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">
-                  At this stage, first-session satisfaction and repeat value matter more than raw download counts.
-                </p>
-              </div>
-
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">Focus</p>
-                <p className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-white">
-                  Improve the repeated value of the AI reflection experience first.
-                </p>
-                <p className="mt-4 text-sm leading-7 text-white/72">
-                  The website acts as the install and trust hub, while the real product leverage is measured on mobile.
-                </p>
-              </div>
+              {roadmapPageContentEn.intro.cards.map((card, index) => (
+                <div
+                  key={card.id}
+                  {...editableAttributes(editPage, "item", introSection.children![index]!)}
+                  className={`${card.tone === "dark" ? "surface-card-dark text-white" : "surface-card"} rounded-[1.8rem] p-6`}
+                >
+                  <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${card.tone === "dark" ? "text-white/62" : "text-[color:var(--color-primary)]"}`}>
+                    {card.label}
+                  </p>
+                  <p className={`mt-4 whitespace-pre-line font-display text-4xl font-semibold tracking-[-0.05em] ${card.tone === "dark" ? "text-white" : "text-[color:var(--color-ink)]"}`}>
+                    {card.title}
+                  </p>
+                  <p className={`mt-4 text-sm leading-7 ${card.tone === "dark" ? "text-white/72" : "text-[color:var(--color-muted)]"}`}>
+                    {card.description}
+                  </p>
+                </div>
+              ))}
             </div>
           }
         />
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", diagnosisSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.94fr_1.06fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Current Diagnosis"
-                title="The current diagnosis is already fairly clear."
-                description="Conversational reflection and mood interpretation are compelling. What needs to grow next is the reason to come back and the value that accumulates with repeated use."
+                eyebrow={roadmapPageContentEn.currentDiagnosis.eyebrow}
+                title={roadmapPageContentEn.currentDiagnosis.title}
+                description={roadmapPageContentEn.currentDiagnosis.description}
               />
 
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">What changes next</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-white">
-                  Move beyond a journal demo
-                  <br />
-                  and become a reflection tool people reopen.
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(diagnosisSection, "focus-card")!)}
+                className="surface-card-dark rounded-[1.8rem] p-6 text-white"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                  {roadmapPageContentEn.currentDiagnosis.focusCard.label}
                 </p>
-                <p className="mt-4 text-sm leading-7 text-white/72">
-                  The next success criteria are repeat usage, recommendation follow-through, and the felt value of accumulated notes.
+                <p className="mt-4 whitespace-pre-line font-display text-4xl font-semibold tracking-[-0.05em] text-white">
+                  {roadmapPageContentEn.currentDiagnosis.focusCard.title}
                 </p>
+                <p className="mt-4 text-sm leading-7 text-white/72">{roadmapPageContentEn.currentDiagnosis.focusCard.description}</p>
               </div>
             </div>
 
             <div className="grid gap-5">
-              {roadmapPrioritiesEn.slice(0, 3).map((item) => (
-                <article key={item.title} className="surface-card-soft rounded-[1.8rem] p-6">
+              {roadmapPageContentEn.currentDiagnosis.previewItems.map((item, index) => (
+                <article
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", diagnosisSection.children![index + 1]!)}
+                  className="surface-card-soft rounded-[1.8rem] p-6"
+                >
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">{item.eyebrow}</p>
                   <h3 className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h3>
                   <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">{item.summary}</p>
@@ -86,18 +86,19 @@ export default function EnglishRoadmapPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", prioritiesSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Priorities"
-              title="The next batch is organized in the order that strengthens repeat use and trust."
-              description="Instead of expanding everything at once, the roadmap follows the sequence most likely to make the product feel stronger over time."
+              eyebrow={roadmapPageContentEn.priorities.eyebrow}
+              title={roadmapPageContentEn.priorities.title}
+              description={roadmapPageContentEn.priorities.description}
             />
 
             <div className="grid gap-5 xl:grid-cols-2">
-              {roadmapPrioritiesEn.map((item, index) => (
+              {roadmapPageContentEn.priorities.items.map((item, index) => (
                 <article
-                  key={item.title}
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", prioritiesSection.children![index]!)}
                   className={`${index === 0 ? "surface-card-dark text-white" : "surface-card-soft"} rounded-[1.8rem] p-6`}
                 >
                   <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${index === 0 ? "text-white/62" : "text-[color:var(--color-primary)]"}`}>
@@ -129,18 +130,22 @@ export default function EnglishRoadmapPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", validationSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Validation"
-                title="These are the signals worth validating before adding more polish."
-                description="The next stage should be measured with metrics and interviews, not just instinct. The key question is whether people actually feel more clarity and more reason to return."
+                eyebrow={roadmapPageContentEn.validation.eyebrow}
+                title={roadmapPageContentEn.validation.title}
+                description={roadmapPageContentEn.validation.description}
               />
 
               <div className="grid gap-4">
-                {validationPlansEn.map((item) => (
-                  <article key={item.title} className="surface-card-soft rounded-[1.6rem] p-5">
+                {roadmapPageContentEn.validation.items.map((item, index) => (
+                  <article
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", validationSection.children![index]!)}
+                    className="surface-card-soft rounded-[1.6rem] p-5"
+                  >
                     <h3 className="font-display text-2xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h3>
                     <div className="mt-4 flex flex-wrap gap-3">
                       {item.metrics.map((metric) => (
@@ -157,33 +162,43 @@ export default function EnglishRoadmapPage() {
               </div>
             </div>
 
-            <div className="grid gap-5">
-              <article className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Trust & Ownership</p>
+            <div {...editableAttributes(editPage, "section", trustAndPaidSection)} className="grid gap-5">
+              <article
+                {...editableAttributes(editPage, "item", getEditableChild(trustAndPaidSection, "trust-card")!)}
+                className="surface-card rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {roadmapPageContentEn.trustAndPaid.trustCard.label}
+                </p>
                 <h3 className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  A sensitive reflection product has to earn trust before anything else.
+                  {roadmapPageContentEn.trustAndPaid.trustCard.title}
                 </h3>
                 <ul className="mt-5 grid gap-3 text-sm leading-7 text-[color:var(--color-muted)]">
-                  {ownershipChecklistEn.map((item) => (
-                    <li key={item} className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-4 py-3">
-                      {item}
+                  {roadmapPageContentEn.trustAndPaid.trustCard.items.map((item) => (
+                    <li key={item.id} className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-4 py-3">
+                      {item.text}
                     </li>
                   ))}
                 </ul>
               </article>
 
-              <article className="surface-card-soft rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Paid Direction</p>
+              <article
+                {...editableAttributes(editPage, "item", getEditableChild(trustAndPaidSection, "paid-card")!)}
+                className="surface-card-soft rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {roadmapPageContentEn.trustAndPaid.paidCard.label}
+                </p>
                 <h3 className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  Paid features should open only after the long-term value is unmistakable.
+                  {roadmapPageContentEn.trustAndPaid.paidCard.title}
                 </h3>
                 <p className="mt-4 text-sm leading-8 text-[color:var(--color-muted)]">
-                  The free experience needs to feel genuinely useful first. Deeper insights and accumulated value are the more natural place to introduce payment later.
+                  {roadmapPageContentEn.trustAndPaid.paidCard.description}
                 </p>
                 <ul className="mt-5 grid gap-3 text-sm leading-7 text-[color:var(--color-muted)]">
-                  {paidValueTracksEn.map((item) => (
-                    <li key={item} className="rounded-[1rem] border border-[color:var(--color-line)] bg-white/80 px-4 py-3">
-                      {item}
+                  {roadmapPageContentEn.trustAndPaid.paidCard.items.map((item) => (
+                    <li key={item.id} className="rounded-[1rem] border border-[color:var(--color-line)] bg-white/80 px-4 py-3">
+                      {item.text}
                     </li>
                   ))}
                 </ul>
@@ -194,13 +209,16 @@ export default function EnglishRoadmapPage() {
 
         <PageCta
           locale="en"
-          eyebrow="Next Step"
-          title="The website stays the trust hub, while the real product test happens on mobile."
-          description="The higher-leverage work now is strengthening first-session value, repeat use, recommendation quality, and user control inside the product itself."
-          primaryHref="/download"
-          primaryLabel="Download APK"
-          secondaryHref="/support"
-          secondaryLabel="Open Support"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={roadmapPageContentEn.cta.eyebrow}
+          title={roadmapPageContentEn.cta.title}
+          description={roadmapPageContentEn.cta.description}
+          primaryHref={roadmapPageContentEn.cta.primaryHref}
+          primaryLabel={roadmapPageContentEn.cta.primaryLabel}
+          secondaryHref={roadmapPageContentEn.cta.secondaryHref}
+          secondaryLabel={roadmapPageContentEn.cta.secondaryLabel}
         />
       </main>
 

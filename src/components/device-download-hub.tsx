@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import QRCode from "react-qr-code";
 
+import type { EditableAttributes } from "@/lib/editable-pages";
 import { siteConfig, siteLocaleCopy, withLocale, type ReleaseStatus, type SiteLocale } from "@/lib/site-config";
 
 type DeviceKind = "android" | "ios" | "desktop" | "compact";
@@ -117,6 +118,16 @@ const localizedCopy = {
   },
 } as const;
 
+export type DeviceDownloadHubEditAttributes = {
+  section?: EditableAttributes;
+  primaryCta?: EditableAttributes;
+  playStore?: EditableAttributes;
+  iosStatus?: EditableAttributes;
+  supportCard?: EditableAttributes;
+  stats?: EditableAttributes;
+  handoff?: EditableAttributes;
+};
+
 function ActionCard({
   href,
   label,
@@ -126,6 +137,7 @@ function ActionCard({
   locale,
   priority = "secondary",
   download = false,
+  editAttributes,
 }: {
   href: string | null;
   label: string;
@@ -135,6 +147,7 @@ function ActionCard({
   locale: SiteLocale;
   priority?: "primary" | "secondary";
   download?: boolean;
+  editAttributes?: EditableAttributes;
 }) {
   const sharedClass =
     "rounded-[1.5rem] border px-5 py-4 transition hover:-translate-y-0.5";
@@ -143,6 +156,7 @@ function ActionCard({
     return (
       <div
         aria-disabled="true"
+        {...editAttributes}
         className={`${sharedClass} border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)] text-[color:var(--color-muted-strong)]`}
       >
         <div className="flex items-center justify-between gap-3">
@@ -163,6 +177,7 @@ function ActionCard({
       data-cta-id={buttonId}
       target={download ? undefined : "_blank"}
       rel={download ? undefined : "noreferrer"}
+      {...editAttributes}
       className={`${sharedClass} ${
         priority === "primary"
           ? "button-primary border-transparent"
@@ -190,10 +205,12 @@ export function DeviceDownloadHub({
   compact = false,
   className = "",
   locale = "ko",
+  editAttributes,
 }: {
   compact?: boolean;
   className?: string;
   locale?: SiteLocale;
+  editAttributes?: DeviceDownloadHubEditAttributes;
 }) {
   const device = useSyncExternalStore<DeviceKind>(
     (onStoreChange) => {
@@ -238,6 +255,7 @@ export function DeviceDownloadHub({
   return (
     <div
       lang={locale}
+      {...editAttributes?.section}
       className={`surface-card mx-auto grid w-full gap-6 rounded-[2rem] p-6 md:grid-cols-[1.08fr_0.92fr] ${compact ? "md:p-7" : "md:p-8"} ${className}`}
     >
       <div className="space-y-6">
@@ -261,6 +279,7 @@ export function DeviceDownloadHub({
             locale={locale}
             priority="primary"
             download={primaryCta.download}
+            editAttributes={editAttributes?.primaryCta}
           />
           <ActionCard
             href={siteConfig.downloads.androidPlay.href}
@@ -269,6 +288,7 @@ export function DeviceDownloadHub({
             buttonId={siteConfig.downloads.androidPlay.ctaId}
             status={siteConfig.downloads.androidPlay.status}
             locale={locale}
+            editAttributes={editAttributes?.playStore}
           />
           <ActionCard
             href={siteConfig.downloads.ios.href}
@@ -277,9 +297,10 @@ export function DeviceDownloadHub({
             buttonId={siteConfig.downloads.ios.ctaId}
             status={siteConfig.downloads.ios.status}
             locale={locale}
+            editAttributes={editAttributes?.iosStatus}
           />
 
-          <div className="surface-card-soft rounded-[1.5rem] p-5">
+          <div {...editAttributes?.supportCard} className="surface-card-soft rounded-[1.5rem] p-5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">{copy.help}</p>
             <p className="mt-3 text-sm leading-7 text-[color:var(--color-muted)]">{copy.helpDescription}</p>
             <Link
@@ -291,7 +312,10 @@ export function DeviceDownloadHub({
           </div>
         </div>
 
-        <div className="grid gap-3 rounded-[1.5rem] border border-dashed border-[color:var(--color-line)] bg-white/56 p-4 text-sm text-[color:var(--color-muted)] sm:grid-cols-3">
+        <div
+          {...editAttributes?.stats}
+          className="grid gap-3 rounded-[1.5rem] border border-dashed border-[color:var(--color-line)] bg-white/56 p-4 text-sm text-[color:var(--color-muted)] sm:grid-cols-3"
+        >
           <div>
             <p className="text-[11px] uppercase tracking-[0.18em] text-[color:var(--color-primary)]">{copy.stats.build}</p>
             <p className="mt-1 font-semibold text-[color:var(--color-ink)]">{siteConfig.release.versionLabel}</p>
@@ -308,7 +332,10 @@ export function DeviceDownloadHub({
       </div>
 
       {device === "desktop" ? (
-        <div className="surface-card-dark glow-orb flex flex-col gap-5 rounded-[1.8rem] p-5 text-white">
+        <div
+          {...editAttributes?.handoff}
+          className="surface-card-dark glow-orb flex flex-col gap-5 rounded-[1.8rem] p-5 text-white"
+        >
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">{copy.qrLabel}</p>
             <p className="mt-3 font-display text-3xl font-semibold tracking-[-0.04em] text-white">{copy.qrTitle}</p>
@@ -322,7 +349,10 @@ export function DeviceDownloadHub({
           </div>
         </div>
       ) : (
-        <div className="surface-card-dark glow-orb rounded-[1.8rem] p-5 text-white">
+        <div
+          {...editAttributes?.handoff}
+          className="surface-card-dark glow-orb rounded-[1.8rem] p-5 text-white"
+        >
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">{copy.mobileLabel}</p>
           <p className="mt-3 font-display text-3xl font-semibold tracking-[-0.04em] text-white">{copy.mobileTitle}</p>
           <p className="mt-3 text-sm leading-7 text-white/70">{copy.mobileDescription}</p>

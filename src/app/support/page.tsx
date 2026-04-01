@@ -1,12 +1,16 @@
 import { PageCta, PageIntro, SectionHeading, SiteFooter, SiteHeader } from "@/components/site-shell";
+import { supportPageContent } from "@/lib/content/support-content";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
 import { buildMetadata, siteConfig } from "@/lib/site-config";
-import { faqs, supportTracks } from "@/lib/site-content";
 
-export const metadata = buildMetadata({
-  title: "지원",
-  description: "설치 문제, 계정 문의, 개인정보 요청, 데모 운영 안내를 확인할 수 있는 Daily Log 지원 페이지입니다.",
-  path: "/support",
-});
+const editPage = getEditablePage("/support")!;
+const introSection = getEditableSection(editPage, "support-intro")!;
+const tracksSection = getEditableSection(editPage, "support-tracks")!;
+const bestContextSection = getEditableSection(editPage, "best-context")!;
+const faqSection = getEditableSection(editPage, "support-faq")!;
+const ctaSection = getEditableSection(editPage, "support-cta")!;
+
+export const metadata = buildMetadata(supportPageContent.metadata);
 
 export default function SupportPage() {
   return (
@@ -15,53 +19,62 @@ export default function SupportPage() {
 
       <main className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Support"
-          title="설치부터 계정, 정책 문의까지 한 번에 이어지는 지원 허브입니다."
-          description="지원 페이지도 랜딩의 일부처럼 읽히도록 구성했습니다. 사용자가 자주 찾는 흐름만 먼저 보여주고, 복잡한 설명은 필요한 곳에만 남깁니다."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={supportPageContent.intro.eyebrow}
+          title={supportPageContent.intro.title}
+          description={supportPageContent.intro.description}
           actions={
             <a
               href={`mailto:${siteConfig.contactEmail}`}
               className="button-primary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
             >
-              메일로 문의하기
+              {supportPageContent.intro.primaryLabel}
             </a>
           }
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Contact</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">지원 채널</p>
-                <a href={`mailto:${siteConfig.contactEmail}`} className="mt-4 inline-flex text-sm font-semibold text-[color:var(--color-ink)]">
-                  {siteConfig.contactEmail}
-                </a>
-                <p className="mt-3 text-sm leading-7 text-[color:var(--color-muted)]">응답 시간 {siteConfig.supportResponseTime}</p>
-              </div>
-
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">Before you send</p>
-                <p className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-white">
-                  문제 상황을 짧게 정리해 보내주면 해결이 훨씬 빨라집니다.
-                </p>
-                <p className="mt-4 text-sm leading-7 text-white/72">
-                  사용 기기, Android 버전, 문제 화면 캡처, 재현 순서를 함께 보내주면 첫 응답의 밀도가 크게 올라갑니다.
-                </p>
-              </div>
+              {supportPageContent.intro.cards.map((card, index) => (
+                <div
+                  key={card.id}
+                  {...editableAttributes(editPage, "item", introSection.children![index]!)}
+                  className={`${card.tone === "dark" ? "surface-card-dark text-white" : "surface-card"} rounded-[1.8rem] p-6`}
+                >
+                  <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${card.tone === "dark" ? "text-white/62" : "text-[color:var(--color-primary)]"}`}>
+                    {card.label}
+                  </p>
+                  <p className={`mt-4 font-display text-4xl font-semibold tracking-[-0.05em] ${card.tone === "dark" ? "text-white" : "text-[color:var(--color-ink)]"}`}>
+                    {card.title}
+                  </p>
+                  <p className={`mt-4 text-sm leading-7 ${card.tone === "dark" ? "text-white/72" : "text-[color:var(--color-muted)]"}`}>
+                    {card.description}
+                  </p>
+                  {card.id === "contact-card" ? (
+                    <>
+                      <a href={`mailto:${siteConfig.contactEmail}`} className="mt-4 inline-flex text-sm font-semibold text-[color:var(--color-ink)]">
+                        {siteConfig.contactEmail}
+                      </a>
+                      <p className="mt-3 text-sm leading-7 text-[color:var(--color-muted)]">{siteConfig.supportResponseTime}</p>
+                    </>
+                  ) : null}
+                </div>
+              ))}
             </div>
           }
         />
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", tracksSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Support Tracks"
-              title="필요한 지원 흐름을 유형별로 나눠 바로 찾을 수 있게 했습니다."
-              description="설치, 계정, 개인정보 요청을 한 화면에 섞지 않고, 지금 필요한 안내만 빠르게 찾아갈 수 있도록 카드 형태로 분리했습니다."
+              eyebrow={supportPageContent.tracks.eyebrow}
+              title={supportPageContent.tracks.title}
+              description={supportPageContent.tracks.description}
             />
 
             <div className="grid gap-5 lg:grid-cols-3">
-              {supportTracks.map((item, index) => (
+              {supportPageContent.tracks.items.map((item, index) => (
                 <article
-                  key={item.title}
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", tracksSection.children![index]!)}
                   className={`${index === 1 ? "surface-card-dark text-white" : "surface-card-soft"} rounded-[1.8rem] p-6`}
                 >
                   <h2 className={`font-display text-3xl font-semibold tracking-[-0.04em] ${index === 1 ? "text-white" : "text-[color:var(--color-ink)]"}`}>
@@ -92,27 +105,34 @@ export default function SupportPage() {
 
         <section className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.96fr_1.04fr]">
-            <div className="surface-card rounded-[2rem] p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Best context to include</p>
+            <div {...editableAttributes(editPage, "section", bestContextSection)} className="surface-card rounded-[2rem] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                {supportPageContent.bestContext.label}
+              </p>
               <div className="mt-5 grid gap-4">
-                {[
-                  "사용 기기명과 Android 버전",
-                  "문제가 발생한 시점과 재현 순서",
-                  "설치 화면 또는 오류 메시지 캡처",
-                  "개인정보/계정 요청의 경우 본인 확인용 기본 정보",
-                ].map((item) => (
-                  <div key={item} className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-5 py-4 text-sm leading-7 text-[color:var(--color-muted)]">
-                    {item}
+                {supportPageContent.bestContext.items.map((item, index) => (
+                  <div
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", bestContextSection.children![index]!)}
+                    className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-5 py-4 text-sm leading-7 text-[color:var(--color-muted)]"
+                  >
+                    {item.text}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="surface-card rounded-[2rem] p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">FAQ</p>
+            <div {...editableAttributes(editPage, "section", faqSection)} className="surface-card rounded-[2rem] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                {supportPageContent.faq.label}
+              </p>
               <div className="mt-5 grid gap-4">
-                {faqs.map((item) => (
-                  <details key={item.question} className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4">
+                {supportPageContent.faq.items.map((item, index) => (
+                  <details
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", faqSection.children![index]!)}
+                    className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4"
+                  >
                     <summary className="cursor-pointer list-none text-base font-semibold text-[color:var(--color-ink)]">
                       {item.question}
                     </summary>
@@ -127,13 +147,16 @@ export default function SupportPage() {
         </section>
 
         <PageCta
-          eyebrow="Next Step"
-          title="설치가 막혀도, 계정 요청이 생겨도 같은 지원 흐름 안에서 해결할 수 있습니다."
-          description="지원은 제품과 분리된 별도 채널이 아니라 설치와 신뢰 경험의 연장선이어야 한다고 보고 구성했습니다."
-          primaryHref="/download"
-          primaryLabel="다운로드로 돌아가기"
-          secondaryHref="/privacy"
-          secondaryLabel="개인정보 문서 보기"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={supportPageContent.cta.eyebrow}
+          title={supportPageContent.cta.title}
+          description={supportPageContent.cta.description}
+          primaryHref={supportPageContent.cta.primaryHref}
+          primaryLabel={supportPageContent.cta.primaryLabel}
+          secondaryHref={supportPageContent.cta.secondaryHref}
+          secondaryLabel={supportPageContent.cta.secondaryLabel}
         />
       </main>
 

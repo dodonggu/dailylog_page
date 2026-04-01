@@ -1,17 +1,17 @@
 import { PageCta, PageIntro, SectionHeading, SiteFooter, SiteHeader } from "@/components/site-shell";
+import { roadmapPageContent } from "@/lib/content/roadmap-content";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
 import { buildMetadata } from "@/lib/site-config";
-import {
-  ownershipChecklist,
-  paidValueTracks,
-  roadmapPriorities,
-  validationPlans,
-} from "@/lib/site-content";
 
-export const metadata = buildMetadata({
-  title: "제품 로드맵",
-  description: "Daily Log가 반복 사용되는 서비스가 되기 위해 다음 단계에서 집중할 제품 우선순위와 검증 기준을 정리한 페이지입니다.",
-  path: "/roadmap",
-});
+const editPage = getEditablePage("/roadmap")!;
+const introSection = getEditableSection(editPage, "roadmap-intro")!;
+const diagnosisSection = getEditableSection(editPage, "current-diagnosis")!;
+const prioritiesSection = getEditableSection(editPage, "priorities")!;
+const validationSection = getEditableSection(editPage, "validation")!;
+const trustAndPaidSection = getEditableSection(editPage, "trust-and-paid")!;
+const ctaSection = getEditableSection(editPage, "roadmap-cta")!;
+
+export const metadata = buildMetadata(roadmapPageContent.metadata);
 
 export default function RoadmapPage() {
   return (
@@ -20,61 +20,63 @@ export default function RoadmapPage() {
 
       <main className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Roadmap"
-          title="예쁜 체험에서 끝나지 않고, 다시 열게 만드는 제품으로 가는 다음 단계입니다."
-          description="로드맵 페이지는 웹사이트 장식보다 제품의 반복 사용성과 누적 가치를 먼저 설명합니다. 무엇을 만들지보다 왜 그 순서인지가 먼저 읽히도록 정리했습니다."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={roadmapPageContent.intro.eyebrow}
+          title={roadmapPageContent.intro.title}
+          description={roadmapPageContent.intro.description}
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Current View</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  먼저 써볼 가치,
-                  <br />
-                  다음은 다시 열 이유.
-                </p>
-                <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">
-                  지금 단계의 핵심은 다운로드 수보다 첫 세션 만족도와 재방문 이유를 얼마나 강하게 만드는지입니다.
-                </p>
-              </div>
-
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">Focus</p>
-                <p className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-white">
-                  AI 회고 도구로서의 반복 사용 가치를 먼저 올립니다.
-                </p>
-                <p className="mt-4 text-sm leading-7 text-white/72">
-                  웹은 설치와 신뢰 허브 역할을 하고, 실제 제품 경쟁력은 모바일 안에서 검증합니다.
-                </p>
-              </div>
+              {roadmapPageContent.intro.cards.map((card, index) => (
+                <div
+                  key={card.id}
+                  {...editableAttributes(editPage, "item", introSection.children![index]!)}
+                  className={`${card.tone === "dark" ? "surface-card-dark text-white" : "surface-card"} rounded-[1.8rem] p-6`}
+                >
+                  <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${card.tone === "dark" ? "text-white/62" : "text-[color:var(--color-primary)]"}`}>
+                    {card.label}
+                  </p>
+                  <p className={`mt-4 whitespace-pre-line font-display text-4xl font-semibold tracking-[-0.05em] ${card.tone === "dark" ? "text-white" : "text-[color:var(--color-ink)]"}`}>
+                    {card.title}
+                  </p>
+                  <p className={`mt-4 text-sm leading-7 ${card.tone === "dark" ? "text-white/72" : "text-[color:var(--color-muted)]"}`}>
+                    {card.description}
+                  </p>
+                </div>
+              ))}
             </div>
           }
         />
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", diagnosisSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.94fr_1.06fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Current Diagnosis"
-                title="현재 판단은 꽤 분명합니다."
-                description="대화형 기록과 감정 해석은 충분히 매력적입니다. 이제는 예쁜 첫 경험보다 반복 사용과 누적 가치가 더 강하게 느껴져야 합니다."
+                eyebrow={roadmapPageContent.currentDiagnosis.eyebrow}
+                title={roadmapPageContent.currentDiagnosis.title}
+                description={roadmapPageContent.currentDiagnosis.description}
               />
 
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">What changes next</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-white">
-                  일기 앱을 넘어서
-                  <br />
-                  반복 사용되는 회고 도구로 갑니다.
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(diagnosisSection, "focus-card")!)}
+                className="surface-card-dark rounded-[1.8rem] p-6 text-white"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                  {roadmapPageContent.currentDiagnosis.focusCard.label}
                 </p>
-                <p className="mt-4 text-sm leading-7 text-white/72">
-                  다음 단계의 성공 기준은 다운로드 수보다 다시 열기, 추천 실행, 기록 축적 가치입니다.
+                <p className="mt-4 whitespace-pre-line font-display text-4xl font-semibold tracking-[-0.05em] text-white">
+                  {roadmapPageContent.currentDiagnosis.focusCard.title}
                 </p>
+                <p className="mt-4 text-sm leading-7 text-white/72">{roadmapPageContent.currentDiagnosis.focusCard.description}</p>
               </div>
             </div>
 
             <div className="grid gap-5">
-              {roadmapPriorities.slice(0, 3).map((item) => (
-                <article key={item.title} className="surface-card-soft rounded-[1.8rem] p-6">
+              {roadmapPageContent.currentDiagnosis.previewItems.map((item, index) => (
+                <article
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", diagnosisSection.children![index + 1]!)}
+                  className="surface-card-soft rounded-[1.8rem] p-6"
+                >
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">{item.eyebrow}</p>
                   <h3 className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h3>
                   <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">{item.summary}</p>
@@ -84,18 +86,19 @@ export default function RoadmapPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", prioritiesSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Priorities"
-              title="다음 배치에서 해결할 순서를 제품 언어로 정리했습니다."
-              description="모든 것을 동시에 늘리는 대신, 반복 사용과 신뢰를 강하게 만드는 순서로 우선순위를 배치했습니다."
+              eyebrow={roadmapPageContent.priorities.eyebrow}
+              title={roadmapPageContent.priorities.title}
+              description={roadmapPageContent.priorities.description}
             />
 
             <div className="grid gap-5 xl:grid-cols-2">
-              {roadmapPriorities.map((item, index) => (
+              {roadmapPageContent.priorities.items.map((item, index) => (
                 <article
-                  key={item.title}
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", prioritiesSection.children![index]!)}
                   className={`${index === 0 ? "surface-card-dark text-white" : "surface-card-soft"} rounded-[1.8rem] p-6`}
                 >
                   <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${index === 0 ? "text-white/62" : "text-[color:var(--color-primary)]"}`}>
@@ -127,18 +130,22 @@ export default function RoadmapPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", validationSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Validation"
-                title="좋아 보이는 기능보다 먼저 검증할 지표입니다."
-                description="다음 단계는 감이 아니라 지표와 인터뷰 질문으로 판단해야 합니다. 사용자가 정말 더 명확함과 회고 가치를 느끼는지가 중요합니다."
+                eyebrow={roadmapPageContent.validation.eyebrow}
+                title={roadmapPageContent.validation.title}
+                description={roadmapPageContent.validation.description}
               />
 
               <div className="grid gap-4">
-                {validationPlans.map((item) => (
-                  <article key={item.title} className="surface-card-soft rounded-[1.6rem] p-5">
+                {roadmapPageContent.validation.items.map((item, index) => (
+                  <article
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", validationSection.children![index]!)}
+                    className="surface-card-soft rounded-[1.6rem] p-5"
+                  >
                     <h3 className="font-display text-2xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h3>
                     <div className="mt-4 flex flex-wrap gap-3">
                       {item.metrics.map((metric) => (
@@ -155,33 +162,43 @@ export default function RoadmapPage() {
               </div>
             </div>
 
-            <div className="grid gap-5">
-              <article className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Trust & Ownership</p>
+            <div {...editableAttributes(editPage, "section", trustAndPaidSection)} className="grid gap-5">
+              <article
+                {...editableAttributes(editPage, "item", getEditableChild(trustAndPaidSection, "trust-card")!)}
+                className="surface-card rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {roadmapPageContent.trustAndPaid.trustCard.label}
+                </p>
                 <h3 className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  민감한 기록 서비스는 기능보다 먼저 신뢰를 만들어야 합니다.
+                  {roadmapPageContent.trustAndPaid.trustCard.title}
                 </h3>
                 <ul className="mt-5 grid gap-3 text-sm leading-7 text-[color:var(--color-muted)]">
-                  {ownershipChecklist.map((item) => (
-                    <li key={item} className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-4 py-3">
-                      {item}
+                  {roadmapPageContent.trustAndPaid.trustCard.items.map((item) => (
+                    <li key={item.id} className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/70 px-4 py-3">
+                      {item.text}
                     </li>
                   ))}
                 </ul>
               </article>
 
-              <article className="surface-card-soft rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Paid Direction</p>
+              <article
+                {...editableAttributes(editPage, "item", getEditableChild(trustAndPaidSection, "paid-card")!)}
+                className="surface-card-soft rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {roadmapPageContent.trustAndPaid.paidCard.label}
+                </p>
                 <h3 className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
-                  과금은 누적 가치가 분명해진 뒤에 여는 편이 맞습니다.
+                  {roadmapPageContent.trustAndPaid.paidCard.title}
                 </h3>
                 <p className="mt-4 text-sm leading-8 text-[color:var(--color-muted)]">
-                  무료 구간의 유용함이 충분히 증명된 뒤에, 더 깊은 인사이트와 관리 편의 영역에서 과금 방향을 여는 것이 자연스럽습니다.
+                  {roadmapPageContent.trustAndPaid.paidCard.description}
                 </p>
                 <ul className="mt-5 grid gap-3 text-sm leading-7 text-[color:var(--color-muted)]">
-                  {paidValueTracks.map((item) => (
-                    <li key={item} className="rounded-[1rem] border border-[color:var(--color-line)] bg-white/80 px-4 py-3">
-                      {item}
+                  {roadmapPageContent.trustAndPaid.paidCard.items.map((item) => (
+                    <li key={item.id} className="rounded-[1rem] border border-[color:var(--color-line)] bg-white/80 px-4 py-3">
+                      {item.text}
                     </li>
                   ))}
                 </ul>
@@ -191,13 +208,16 @@ export default function RoadmapPage() {
         </section>
 
         <PageCta
-          eyebrow="Next Step"
-          title="웹은 신뢰 허브로 남기고, 제품의 승부는 모바일 안에서 보겠습니다."
-          description="랜딩을 더 화려하게 만드는 것보다 첫 세션 가치, 재방문, 추천 품질, 데이터 소유권을 실제 제품에서 강화하는 일이 우선입니다."
-          primaryHref="/download"
-          primaryLabel="APK 다운로드"
-          secondaryHref="/support"
-          secondaryLabel="지원 보기"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={roadmapPageContent.cta.eyebrow}
+          title={roadmapPageContent.cta.title}
+          description={roadmapPageContent.cta.description}
+          primaryHref={roadmapPageContent.cta.primaryHref}
+          primaryLabel={roadmapPageContent.cta.primaryLabel}
+          secondaryHref={roadmapPageContent.cta.secondaryHref}
+          secondaryLabel={roadmapPageContent.cta.secondaryLabel}
         />
       </main>
 

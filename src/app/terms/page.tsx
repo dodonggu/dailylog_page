@@ -1,12 +1,17 @@
 import { PageCta, PageIntro, SiteFooter, SiteHeader } from "@/components/site-shell";
-import { buildMetadata, siteConfig } from "@/lib/site-config";
-import { termsSections } from "@/lib/site-content";
+import { legalPageContent } from "@/lib/content/legal-content";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
+import { buildMetadata } from "@/lib/site-config";
 
-export const metadata = buildMetadata({
-  title: "이용약관",
-  description: "Daily Log 데모 버전의 이용약관 초안을 확인할 수 있는 페이지입니다.",
-  path: "/terms",
-});
+const termsContent = legalPageContent.terms;
+const editPage = getEditablePage("/terms")!;
+const introSection = getEditableSection(editPage, "terms-intro")!;
+const draftNoticeSection = getEditableSection(editPage, "terms-draft-notice")!;
+const sectionsSection = getEditableSection(editPage, "terms-sections")!;
+const footerNoteSection = getEditableSection(editPage, "terms-footer-note")!;
+const ctaSection = getEditableSection(editPage, "terms-cta")!;
+
+export const metadata = buildMetadata(termsContent.metadata);
 
 export default function TermsPage() {
   return (
@@ -15,73 +20,87 @@ export default function TermsPage() {
 
       <main className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Terms"
-          title="Daily Log 이용약관 초안"
-          description="이 문서는 데모 릴리스와 랜딩 공개를 위해 정리한 초안입니다. 실제 운영 범위, 책임 제한, 계정 정책이 확정되면 최종 약관으로 교체되어야 합니다."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={termsContent.intro.eyebrow}
+          title={termsContent.intro.title}
+          description={termsContent.intro.description}
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Document Status</p>
-                <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">데모 기준 초안</p>
-                <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">
-                  정식 공개 전 최종 약관으로 교체가 필요합니다.
-                  <br />
-                  문의 {siteConfig.contactEmail}
-                </p>
-              </div>
-              <div className="surface-card-soft rounded-[1.8rem] p-6 text-sm leading-7 text-[color:var(--color-muted)]">
-                서비스 범위, 책임 제한, 정책 변경 고지 방식, 이용 제한 조건은 실제 운영안에 맞춰 다시 검토해야 합니다.
-              </div>
+              {termsContent.intro.cards.map((card, index) => (
+                <div
+                  key={card.id}
+                  {...editableAttributes(editPage, "item", introSection.children![index]!)}
+                  className={`${index === 0 ? "surface-card" : "surface-card-soft"} rounded-[1.8rem] p-6`}
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">{card.label}</p>
+                  <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">{card.title}</p>
+                  <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">{card.description}</p>
+                </div>
+              ))}
             </div>
           }
         />
 
         <section className="px-6 py-12">
           <div className="mx-auto grid w-full max-w-4xl gap-5">
-            <div className="rounded-[1.5rem] border border-dashed border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/72 px-5 py-5 text-sm leading-7 text-[color:var(--color-muted)]">
-              현재 문서는 구조를 먼저 정리한 초안입니다. 실제 서비스의 정의, 이용 제한, 책임 범위, 공지 절차는 운영 형태에 맞춰 재검토가 필요합니다.
+            <div
+              {...editableAttributes(editPage, "section", draftNoticeSection)}
+              className="rounded-[1.5rem] border border-dashed border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/72 px-5 py-5 text-sm leading-7 text-[color:var(--color-muted)]"
+            >
+              {termsContent.draftNotice}
             </div>
 
-            {termsSections.map((section) => (
-              <article key={section.title} className="surface-card rounded-[1.8rem] px-6 py-6">
-                <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{section.title}</h2>
-                <div className="mt-4 space-y-4 text-sm leading-8 text-[color:var(--color-muted)]">
-                  {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                  {section.bullets ? (
-                    <ul className="space-y-3">
-                      {section.bullets.map((bullet) => (
-                        <li
-                          key={bullet}
-                          className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/66 px-4 py-3"
-                        >
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              </article>
-            ))}
-
-            <div className="surface-card rounded-[1.6rem] px-6 py-6 text-sm leading-8 text-[color:var(--color-muted)]">
-              문의 메일:{" "}
-              <a href={`mailto:${siteConfig.contactEmail}`} className="font-semibold text-[color:var(--color-ink)]">
-                {siteConfig.contactEmail}
-              </a>
+            <div {...editableAttributes(editPage, "section", sectionsSection)} className="grid gap-5">
+              {termsContent.sections.map((section, index) => (
+                <article
+                  key={section.id}
+                  {...editableAttributes(editPage, "item", sectionsSection.children![index]!)}
+                  className="surface-card rounded-[1.8rem] px-6 py-6"
+                >
+                  <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{section.title}</h2>
+                  <div className="mt-4 space-y-4 text-sm leading-8 text-[color:var(--color-muted)]">
+                    {section.paragraphs.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
+                    {section.bullets ? (
+                      <ul className="space-y-3">
+                        {section.bullets.map((bullet) => (
+                          <li
+                            key={bullet}
+                            className="rounded-[1rem] border border-[color:var(--color-line)] bg-[color:var(--color-surface-alt)]/66 px-4 py-3"
+                          >
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </article>
+              ))}
             </div>
+
+            {termsContent.footerNote ? (
+              <div
+                {...editableAttributes(editPage, "section", footerNoteSection)}
+                className="surface-card rounded-[1.6rem] px-6 py-6 text-sm leading-8 text-[color:var(--color-muted)]"
+              >
+                {termsContent.footerNote.text}
+              </div>
+            ) : null}
           </div>
         </section>
 
         <PageCta
-          eyebrow="Policy Navigation"
-          title="약관 페이지에서도 지원과 개인정보 문서로 자연스럽게 이어지게 했습니다."
-          description="문서 확인이 끝난 뒤에도 설치/지원 흐름을 잃지 않도록 공통 CTA와 링크 구조를 맞췄습니다."
-          primaryHref="/privacy"
-          primaryLabel="개인정보처리방침 보기"
-          secondaryHref="/support"
-          secondaryLabel="지원 보기"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={termsContent.cta.eyebrow}
+          title={termsContent.cta.title}
+          description={termsContent.cta.description}
+          primaryHref={termsContent.cta.primaryHref}
+          primaryLabel={termsContent.cta.primaryLabel}
+          secondaryHref={termsContent.cta.secondaryHref}
+          secondaryLabel={termsContent.cta.secondaryLabel}
         />
       </main>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import type { EditableAttributes } from "@/lib/editable-pages";
 import { Pill } from "@/components/site-shell";
 import { withLocale, type SiteLocale } from "@/lib/site-config";
 
@@ -65,6 +66,23 @@ export type MarketingHomeProps = {
     secondaryLabel: string;
     footerLinks: FooterLink[];
   };
+  editAttributes?: {
+    hero?: EditableAttributes;
+    heroCards?: EditableAttributes[];
+    scenesSection?: EditableAttributes;
+    scenes?: Array<{
+      section?: EditableAttributes;
+      cards?: EditableAttributes[];
+    }>;
+    values?: EditableAttributes;
+    valueCards?: EditableAttributes[];
+    finalCta?: EditableAttributes;
+    finalCtaActions?: {
+      primary?: EditableAttributes;
+      secondary?: EditableAttributes;
+      footerLinks?: EditableAttributes[];
+    };
+  };
 };
 
 export function MarketingHomePage({
@@ -74,10 +92,11 @@ export function MarketingHomePage({
   scenes,
   values,
   finalCta,
+  editAttributes,
 }: MarketingHomeProps) {
   return (
     <main lang={locale === "en" ? "en" : undefined} className="reading-surface flex-1">
-      <section className="page-band relative overflow-hidden px-6 pb-24 pt-10 sm:pt-16 lg:pt-20">
+      <section {...editAttributes?.hero} className="page-band relative overflow-hidden px-6 pb-24 pt-10 sm:pt-16 lg:pt-20">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top,rgba(122,99,255,0.14),transparent_32%),radial-gradient(circle_at_top_left,rgba(255,236,219,0.74),transparent_42%)]" />
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
           <div className="reveal-block inline-flex rounded-full border border-[color:var(--color-line)] bg-white/78 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
@@ -121,6 +140,7 @@ export function MarketingHomePage({
                 {hero.cards.map((card, index) => (
                   <article
                     key={card.title}
+                    {...editAttributes?.heroCards?.[index]}
                     className={`surface-card-soft reveal-block rounded-[1.5rem] p-5 text-left ${index === 1 ? "reveal-delay-1" : index === 2 ? "reveal-delay-2" : ""}`}
                   >
                     <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--color-primary)]">{card.label}</p>
@@ -133,7 +153,7 @@ export function MarketingHomePage({
         </div>
       </section>
 
-      <section id="product" className="px-6 py-8">
+      <section {...editAttributes?.scenesSection} id="product" className="px-6 py-8">
         <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-4 text-center">
           <p className="eyebrow-label text-[11px] font-semibold uppercase text-[color:var(--color-primary)]">
             {scenesSection.eyebrow}
@@ -154,6 +174,7 @@ export function MarketingHomePage({
             return (
               <article
                 key={scene.id}
+                {...editAttributes?.scenes?.[index]?.section}
                 id={scene.id}
                 className={`${dark ? "surface-card-dark text-white" : "surface-card text-[color:var(--color-ink)]"} grid gap-8 rounded-[2.2rem] px-6 py-8 md:px-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center`}
               >
@@ -169,9 +190,10 @@ export function MarketingHomePage({
                   </p>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {scene.cards.map((card) => (
+                    {scene.cards.map((card, cardIndex) => (
                       <div
                         key={card.title}
+                        {...editAttributes?.scenes?.[index]?.cards?.[cardIndex]}
                         className={`rounded-[1.4rem] border px-4 py-4 ${
                           dark
                             ? "border-white/10 bg-white/6"
@@ -196,7 +218,7 @@ export function MarketingHomePage({
         </div>
       </section>
 
-      <section className="px-6 py-20">
+      <section {...editAttributes?.values} className="px-6 py-20">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
           <div className="flex max-w-3xl flex-col gap-4">
             <p className="eyebrow-label text-[11px] font-semibold uppercase text-[color:var(--color-primary)]">{values.eyebrow}</p>
@@ -208,6 +230,7 @@ export function MarketingHomePage({
             {values.cards.map((card, index) => (
               <article
                 key={card.title}
+                {...editAttributes?.valueCards?.[index]}
                 className={`${card.tone === "accent" ? "surface-card-dark md:col-span-2" : "surface-card-soft"} rounded-[1.8rem] p-6 ${index === 0 ? "xl:col-span-2" : ""}`}
               >
                 <h3 className={`font-display text-3xl font-semibold tracking-[-0.04em] ${card.tone === "accent" ? "text-white" : "text-[color:var(--color-ink)]"}`}>
@@ -222,7 +245,7 @@ export function MarketingHomePage({
         </div>
       </section>
 
-      <section className="px-6 pb-10 pt-6">
+      <section {...editAttributes?.finalCta} className="px-6 pb-10 pt-6">
         <div className="surface-card-dark mx-auto w-full max-w-7xl rounded-[2.2rem] px-6 py-10 text-white md:px-10">
           <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
             <div className="space-y-4">
@@ -235,12 +258,14 @@ export function MarketingHomePage({
               <div className="flex flex-wrap gap-3 lg:justify-end">
                 <Link
                   href={withLocale("/download", locale)}
+                  {...editAttributes?.finalCtaActions?.primary}
                   className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-[color:var(--color-ink)] transition hover:-translate-y-0.5"
                 >
                   {finalCta.primaryLabel}
                 </Link>
                 <Link
                   href={withLocale("/support", locale)}
+                  {...editAttributes?.finalCtaActions?.secondary}
                   className="button-dark inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
                 >
                   {finalCta.secondaryLabel}
@@ -248,10 +273,11 @@ export function MarketingHomePage({
               </div>
 
               <div className="flex flex-wrap gap-3 lg:justify-end">
-                {finalCta.footerLinks.map((item) => (
+                {finalCta.footerLinks.map((item, index) => (
                   <Link
                     key={item.href}
                     href={withLocale(item.href, locale)}
+                    {...editAttributes?.finalCtaActions?.footerLinks?.[index]}
                     className="rounded-full border border-white/12 bg-white/6 px-4 py-2 text-xs font-medium text-white/72 transition hover:bg-white/10"
                   >
                     {item.label}

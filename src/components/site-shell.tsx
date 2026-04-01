@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SiteHeaderClient } from "@/components/site-header-client";
+import type { EditableAttributes } from "@/lib/editable-pages";
 import { siteConfig, siteLocaleCopy, withLocale, type SiteLocale } from "@/lib/site-config";
 
 const footerCopy = {
@@ -165,15 +166,17 @@ export function PageIntro({
   description,
   aside,
   actions,
+  editAttributes,
 }: {
   eyebrow: string;
   title: string;
   description: string;
   aside?: ReactNode;
   actions?: ReactNode;
+  editAttributes?: EditableAttributes;
 }) {
   return (
-    <section className="page-band relative overflow-hidden px-6 pb-12 pt-14 sm:pt-20">
+    <section {...editAttributes} className="page-band relative overflow-hidden px-6 pb-12 pt-14 sm:pt-20">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-[radial-gradient(circle_at_top_right,rgba(122,99,255,0.14),transparent_30%),radial-gradient(circle_at_top_left,rgba(255,236,219,0.84),transparent_40%)]" />
       <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[1.04fr_0.96fr] lg:items-start">
         <div className="reveal-block space-y-6 pt-3">
@@ -202,6 +205,9 @@ export function PageCta({
   primaryLabel,
   secondaryHref,
   secondaryLabel,
+  editAttributes,
+  primaryEditAttributes,
+  secondaryEditAttributes,
 }: {
   locale?: SiteLocale;
   eyebrow: string;
@@ -211,9 +217,12 @@ export function PageCta({
   primaryLabel: string;
   secondaryHref: string;
   secondaryLabel: string;
+  editAttributes?: EditableAttributes;
+  primaryEditAttributes?: EditableAttributes;
+  secondaryEditAttributes?: EditableAttributes;
 }) {
   return (
-    <section className="px-6 pb-6 pt-8">
+    <section {...editAttributes} className="px-6 pb-6 pt-8">
       <div className="surface-card-dark mx-auto w-full max-w-7xl rounded-[2rem] px-6 py-10 text-white md:px-10">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div className="space-y-4">
@@ -225,12 +234,14 @@ export function PageCta({
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <Link
               href={withLocale(primaryHref, locale)}
+              {...primaryEditAttributes}
               className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-[color:var(--color-ink)] transition hover:-translate-y-0.5"
             >
               {primaryLabel}
             </Link>
             <Link
               href={withLocale(secondaryHref, locale)}
+              {...secondaryEditAttributes}
               className="button-dark inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
             >
               {secondaryLabel}

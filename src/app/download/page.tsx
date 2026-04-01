@@ -1,14 +1,20 @@
 import { DeviceDownloadHub } from "@/components/device-download-hub";
 import { PageCta, PageIntro, SectionHeading, SiteFooter, SiteHeader } from "@/components/site-shell";
+import { downloadPageContent } from "@/lib/content/download-page-content";
+import { editableAttributes, getEditableChild, getEditablePage, getEditableSection } from "@/lib/editable-pages";
 import { findLocalAndroidApk } from "@/lib/apk-release";
 import { buildMetadata, siteConfig } from "@/lib/site-config";
-import { downloadNotes, faqs, installSteps, troubleshooting } from "@/lib/site-content";
 
-export const metadata = buildMetadata({
-  title: "다운로드",
-  description: "Android APK 다운로드, QR 연결, 지원 OS, 설치 가이드를 한 번에 확인할 수 있는 Daily Log 다운로드 페이지입니다.",
-  path: "/download",
-});
+const editPage = getEditablePage("/download")!;
+const introSection = getEditableSection(editPage, "download-intro")!;
+const hubSection = getEditableSection(editPage, "download-hub")!;
+const beforeInstallSection = getEditableSection(editPage, "before-install")!;
+const installStepsSection = getEditableSection(editPage, "install-steps")!;
+const troubleshootingSection = getEditableSection(editPage, "troubleshooting")!;
+const quickAnswersSection = getEditableSection(editPage, "quick-answers")!;
+const ctaSection = getEditableSection(editPage, "download-cta")!;
+
+export const metadata = buildMetadata(downloadPageContent.metadata);
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +31,9 @@ function formatPackageUpdatedAt(mtimeMs: number) {
 
 export default async function DownloadPage() {
   const localApk = await findLocalAndroidApk();
-  const deliverySource = localApk ? "서버에서 직접 제공 중" : "GitHub Releases 대체 경로 사용";
+  const deliverySource = localApk
+    ? downloadPageContent.intro.currentPackageCard.directSourceLabel
+    : downloadPageContent.intro.currentPackageCard.fallbackSourceLabel;
   const deliveryLabel = localApk ? localApk.filename : siteConfig.release.versionLabel;
   const deliveryUpdatedAt = localApk ? formatPackageUpdatedAt(localApk.mtimeMs) : siteConfig.release.lastUpdated;
   const deliverySize = localApk ? formatPackageSize(localApk.size) : siteConfig.release.fileSize;
@@ -36,9 +44,10 @@ export default async function DownloadPage() {
 
       <main className="reading-surface flex-1">
         <PageIntro
-          eyebrow="Download"
-          title="설치 흐름과 현재 배포 상태를 같은 시야 안에 두었습니다."
-          description="이 페이지는 모바일에서는 설치 액션을 먼저, 데스크톱에서는 QR handoff와 배포 상태를 함께 보여줍니다. 준비되지 않은 채널은 상태만 분명하게 안내합니다."
+          editAttributes={editableAttributes(editPage, "section", introSection)}
+          eyebrow={downloadPageContent.intro.eyebrow}
+          title={downloadPageContent.intro.title}
+          description={downloadPageContent.intro.description}
           actions={
             <>
               <a
@@ -47,53 +56,65 @@ export default async function DownloadPage() {
                 data-cta-id="download-page-hero-apk"
                 className="button-primary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
               >
-                Android APK 받기
+                {downloadPageContent.intro.primaryLabel}
               </a>
               <a
-                href="#install-guide"
+                href={`#${installStepsSection.targetId}`}
                 className="button-secondary inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition"
               >
-                설치 순서 보기
+                {downloadPageContent.intro.secondaryLabel}
               </a>
             </>
           }
           aside={
             <div className="grid gap-4">
-              <div className="surface-card rounded-[1.8rem] p-6">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Release</p>
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(introSection, "release-card")!)}
+                className="surface-card rounded-[1.8rem] p-6"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                  {downloadPageContent.intro.releaseCard.label}
+                </p>
                 <p className="mt-4 font-display text-4xl font-semibold tracking-[-0.05em] text-[color:var(--color-ink)]">
                   {siteConfig.release.versionLabel}
                 </p>
                 <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">
                   {siteConfig.release.supportedOs}
                   <br />
-                  패키지 크기 {siteConfig.release.fileSize}
+                  {downloadPageContent.intro.releaseCard.packageSizeLabel} {siteConfig.release.fileSize}
                   <br />
-                  업데이트 {siteConfig.release.lastUpdated}
+                  {downloadPageContent.intro.releaseCard.updatedLabel} {siteConfig.release.lastUpdated}
                 </p>
               </div>
 
-              <div className="surface-card-dark rounded-[1.8rem] p-6 text-white">
+              <div
+                {...editableAttributes(editPage, "item", getEditableChild(introSection, "package-card")!)}
+                className="surface-card-dark rounded-[1.8rem] p-6 text-white"
+              >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">Current package</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
+                    {downloadPageContent.intro.currentPackageCard.label}
+                  </p>
                   <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/72">
-                    {localApk ? "Direct" : "Fallback"}
+                    {localApk
+                      ? downloadPageContent.intro.currentPackageCard.directBadge
+                      : downloadPageContent.intro.currentPackageCard.fallbackBadge}
                   </span>
                 </div>
                 <p className="mt-4 font-display text-3xl font-semibold tracking-[-0.04em] text-white">{deliveryLabel}</p>
                 <div className="mt-4 grid gap-3 text-sm leading-7 text-white/72">
                   <p>
-                    전달 경로
+                    {downloadPageContent.intro.currentPackageCard.deliveryPathLabel}
                     <br />
                     <span className="font-medium text-white">{deliverySource}</span>
                   </p>
                   <p>
-                    현재 파일 크기
+                    {downloadPageContent.intro.currentPackageCard.currentFileSizeLabel}
                     <br />
                     <span className="font-medium text-white">{deliverySize}</span>
                   </p>
                   <p>
-                    확인 시점
+                    {downloadPageContent.intro.currentPackageCard.verifiedAtLabel}
                     <br />
                     <span className="font-medium text-white">{deliveryUpdatedAt}</span>
                   </p>
@@ -105,21 +126,35 @@ export default async function DownloadPage() {
 
         <section className="px-6 py-8">
           <div className="mx-auto w-full max-w-7xl">
-            <DeviceDownloadHub />
+            <DeviceDownloadHub
+              editAttributes={{
+                section: editableAttributes(editPage, "section", hubSection),
+                primaryCta: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-primary-cta")!),
+                playStore: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-play-store")!),
+                iosStatus: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-ios-status")!),
+                supportCard: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-support-card")!),
+                stats: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-stats")!),
+                handoff: editableAttributes(editPage, "item", getEditableChild(hubSection, "download-handoff")!),
+              }}
+            />
           </div>
         </section>
 
-        <section id="install-guide" className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", beforeInstallSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Before Install"
-              title="설치 전에 정말 필요한 정보만 먼저 정리했습니다."
-              description="설치를 방해하는 실제 요인만 먼저 보여주고, 나머지 설명은 뒤로 미룹니다. 한눈에 읽히는 속도를 우선한 구성입니다."
+              eyebrow={downloadPageContent.beforeInstall.eyebrow}
+              title={downloadPageContent.beforeInstall.title}
+              description={downloadPageContent.beforeInstall.description}
             />
 
             <div className="grid gap-5 lg:grid-cols-3">
-              {downloadNotes.map((item) => (
-                <article key={item.title} className="surface-card-soft rounded-[1.8rem] p-6">
+              {downloadPageContent.beforeInstall.items.map((item, index) => (
+                <article
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", beforeInstallSection.children![index]!)}
+                  className="surface-card-soft rounded-[1.8rem] p-6"
+                >
                   <h2 className="font-display text-3xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h2>
                   <p className="mt-4 text-sm leading-7 text-[color:var(--color-muted)]">{item.description}</p>
                 </article>
@@ -128,18 +163,19 @@ export default async function DownloadPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", installStepsSection)} className="px-6 py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
             <SectionHeading
-              eyebrow="Install Steps"
-              title="설치 경로는 길지 않아야 하고, 어느 기기에서 봐도 같아야 합니다."
-              description="PC와 모바일 어디서 들어오더라도 같은 목표를 향해 움직이도록 단계를 짧게 유지했습니다."
+              eyebrow={downloadPageContent.installSteps.eyebrow}
+              title={downloadPageContent.installSteps.title}
+              description={downloadPageContent.installSteps.description}
             />
 
             <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
-              {installSteps.map((item, index) => (
+              {downloadPageContent.installSteps.items.map((item, index) => (
                 <article
-                  key={item.title}
+                  key={item.id}
+                  {...editableAttributes(editPage, "item", installStepsSection.children![index]!)}
                   className={`${index === 1 ? "surface-card-dark text-white" : "surface-card-soft"} rounded-[1.8rem] p-6`}
                 >
                   <h2 className={`font-display text-3xl font-semibold tracking-[-0.04em] ${index === 1 ? "text-white" : "text-[color:var(--color-ink)]"}`}>
@@ -154,18 +190,22 @@ export default async function DownloadPage() {
           </div>
         </section>
 
-        <section className="px-6 py-16">
+        <section {...editableAttributes(editPage, "section", troubleshootingSection)} className="px-6 py-16">
           <div className="mx-auto grid w-full max-w-7xl gap-8 lg:grid-cols-[0.96fr_1.04fr]">
             <div className="space-y-4">
               <SectionHeading
-                eyebrow="Troubleshooting"
-                title="설치가 막히면 가장 먼저 확인할 항목부터 보여줍니다."
-                description="데모 배포 단계에서 자주 발생하는 이슈를 중심으로 스스로 확인 가능한 항목을 우선 정리했습니다."
+                eyebrow={downloadPageContent.troubleshooting.eyebrow}
+                title={downloadPageContent.troubleshooting.title}
+                description={downloadPageContent.troubleshooting.description}
               />
 
               <div className="grid gap-4">
-                {troubleshooting.map((item) => (
-                  <article key={item.title} className="surface-card-soft rounded-[1.6rem] p-5">
+                {downloadPageContent.troubleshooting.items.map((item, index) => (
+                  <article
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", troubleshootingSection.children![index]!)}
+                    className="surface-card-soft rounded-[1.6rem] p-5"
+                  >
                     <h2 className="font-display text-2xl font-semibold tracking-[-0.04em] text-[color:var(--color-ink)]">{item.title}</h2>
                     <p className="mt-3 text-sm leading-7 text-[color:var(--color-muted)]">{item.description}</p>
                   </article>
@@ -173,11 +213,17 @@ export default async function DownloadPage() {
               </div>
             </div>
 
-            <div className="surface-card rounded-[2rem] p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">Quick Answers</p>
+            <div {...editableAttributes(editPage, "section", quickAnswersSection)} className="surface-card rounded-[2rem] p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--color-primary)]">
+                {downloadPageContent.quickAnswers.label}
+              </p>
               <div className="mt-5 grid gap-4">
-                {faqs.slice(0, 4).map((item) => (
-                  <details key={item.question} className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4">
+                {downloadPageContent.quickAnswers.items.map((item, index) => (
+                  <details
+                    key={item.id}
+                    {...editableAttributes(editPage, "item", quickAnswersSection.children![index]!)}
+                    className="rounded-[1.4rem] border border-[color:var(--color-line)] bg-white/80 px-5 py-4"
+                  >
                     <summary className="cursor-pointer list-none text-base font-semibold text-[color:var(--color-ink)]">
                       {item.question}
                     </summary>
@@ -192,13 +238,16 @@ export default async function DownloadPage() {
         </section>
 
         <PageCta
-          eyebrow="Next Step"
-          title="설치 이후에도 지원과 정책 흐름이 같은 구조로 이어집니다."
-          description="다운로드만 제공하는 페이지가 아니라, 막히는 순간 바로 지원과 정책 페이지로 넘어갈 수 있는 허브로 설계했습니다."
-          primaryHref="/support"
-          primaryLabel="지원 보기"
-          secondaryHref="/privacy"
-          secondaryLabel="정책 보기"
+          editAttributes={editableAttributes(editPage, "section", ctaSection)}
+          primaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "primary-cta")!)}
+          secondaryEditAttributes={editableAttributes(editPage, "item", getEditableChild(ctaSection, "secondary-cta")!)}
+          eyebrow={downloadPageContent.cta.eyebrow}
+          title={downloadPageContent.cta.title}
+          description={downloadPageContent.cta.description}
+          primaryHref={downloadPageContent.cta.primaryHref}
+          primaryLabel={downloadPageContent.cta.primaryLabel}
+          secondaryHref={downloadPageContent.cta.secondaryHref}
+          secondaryLabel={downloadPageContent.cta.secondaryLabel}
         />
       </main>
 

@@ -1,141 +1,144 @@
-import type { HomeNavGroup, HomeSectionId } from "@/lib/site-content";
+import {
+  createHomeArchiveVisual,
+  createHomeCheckinVisual,
+  createHomeDiaryVisual,
+  createHomeHeroVisual,
+  createHomeNextLoopVisual,
+} from "@/lib/content/marketing-home-visuals";
+import type { MarketingHomeContent } from "@/lib/content/page-content-types";
 
-type ReadingSection = {
-  id: HomeSectionId;
-  label: string;
-  navGroup: HomeNavGroup;
-};
-
-export const homeReadingSectionsEn = [
-  { id: "hero", label: "Introduction", navGroup: "value" },
-  { id: "why-daily-log", label: "Why Daily Log", navGroup: "value" },
-  { id: "how-it-works", label: "Check-in Flow", navGroup: "flow" },
-  { id: "preview", label: "Product Preview", navGroup: "flow" },
-  { id: "value-loop", label: "Why You Come Back", navGroup: "return" },
-  { id: "trust", label: "Trust & Guidance", navGroup: "return" },
-  { id: "faq", label: "FAQ", navGroup: "faq" },
-  { id: "home-cta", label: "Download Guide", navGroup: "faq" },
-] as const satisfies readonly ReadingSection[];
-
-export const homeHeroHighlightsEn = [
-  "3-5 minute check-ins",
-  "Mood summaries",
-  "A next step that feels doable",
-] as const;
-
-export const homeHeroNoteEn = {
-  eyebrow: "Today’s check-in",
-  title: "A few gentle prompts are enough to help the day settle into words.",
-  description:
-    "Instead of dropping you into a blank journal, Daily Log starts with short questions and turns the answer into a clean reflection.",
-} as const;
-
-export const homeWhyPointsEn = [
-  {
-    title: "Start without pressure",
+export const homePageContentEn: MarketingHomeContent = {
+  metadata: {
+    title: "A clearer way to reflect",
     description:
-      "You do not need to open with a perfect sentence. Daily Log begins with prompts, so the first line appears naturally instead of asking you to build momentum alone.",
+      "Daily Log is the main landing page for the demo, product flow, install guide, support paths, and policy links in one place.",
+    path: "/en",
+    locale: "en",
   },
-  {
-    title: "See the feeling behind the day",
+  hero: {
+    eyebrow: "Daily Log",
+    title: "Sort through the day easily, and leave it as something worth reopening.",
     description:
-      "It is not only about listing what happened. The product helps organize the mood and context behind the day, so the reflection still makes sense when you return later.",
+      "Daily Log is a mobile-first AI journaling service that uses AI voice conversation to help people sort through the day and understand their emotional flow at a glance.",
+    primaryLabel: "Open Download",
+    secondaryLabel: "See Product Flow",
+    pills: ["3-5 minute check-in", "Conversational journaling", "AI summaries", "Android APK available"],
+    cards: [
+      { id: "fast-start", label: "Fast Start", title: "The first screen is structured so people can read both the install route and the product flow right away." },
+      { id: "clear-state", label: "Clear State", title: "Release status and support paths stay visible inside the same page flow." },
+      { id: "return-loop", label: "Return Loop", title: "The landing prioritizes giving people a reason to come back, not just a polished first impression." },
+    ],
+    visual: createHomeHeroVisual("Daily Log sign-in and first check-in screen"),
   },
-  {
-    title: "Leave with a next step",
-    description:
-      "The goal is not to stop at journaling. Daily Log helps connect the reflection to one small action that still feels realistic for today.",
+  scenesSection: {
+    eyebrow: "Product Story",
+    title: "A lifelog service that records the day through AI conversation,\nand offers feedback grounded in personal data.",
+    description: "Core service features",
   },
-] as const;
-
-export const homeStoryMomentsEn = [
-  {
-    eyebrow: "A check-in that starts gently",
-    title: "Follow a few short prompts and the day starts to organize itself.",
-    description:
-      "Daily Log removes the pressure of figuring out where to begin. The prompt flow keeps the first interaction light, so the reflection starts feeling useful before it feels heavy.",
-    image: "/images/app-runtime.webp",
-    imageAlt: "Daily Log check-in screen",
-  },
-  {
-    eyebrow: "Analysis that keeps the context intact",
-    title: "Scattered feelings turn into a summary you can actually revisit.",
-    description:
-      "Daily Log pulls the emotional thread out of the day and gives it structure. Even after a few days pass, the reflection still reads like something you would want to open again.",
-    image: "/images/app-diary-ai.webp",
-    imageAlt: "Daily Log mood insight screen",
-  },
-  {
-    eyebrow: "Reflection worth reopening",
-    title: "As the days stack up, the journal starts to feel like a calm archive of your own story.",
-    description:
-      "Photos, notes, and summaries stay together in one place, so each entry becomes easier to revisit. The value comes from a memory that keeps getting more meaningful over time.",
-    image: "/images/app-diary-photo.webp",
-    imageAlt: "Daily Log detailed journal screen",
-  },
-] as const;
-
-export const homeFeatureShowcaseEn = {
-  eyebrow: "Product Preview",
-  title: "The day moves from a short check-in to a reflection you can keep.",
-  description:
-    "The product flow connects prompts, summaries, reflection, and revisiting without making the interface feel crowded. This page focuses on the core path and keeps deeper setup details for the download and support pages.",
-  image: "/images/app-home.webp",
-  imageAlt: "Daily Log home screen",
-  cards: [
+  scenes: [
     {
-      title: "Automatic organization",
-      description: "The main screen keeps today’s state and recent entries easy to scan without asking the user to manage the layout manually.",
+      id: "scene-checkin",
+      eyebrow: "Scene 01",
+      title: "Voice-led AI conversation",
+      description: "An AI prompt for the moments when getting started feels hardest.",
+      cards: [
+        { id: "short-entry", title: "One clear question", description: "A single prompt sits at the center of the screen so the starting point never feels confusing." },
+        { id: "lower-pressure", title: "Quick response buttons", description: "Skip, start answering, and complete actions stay visible below so people can react without extra steps." },
+        { id: "mobile-first", title: "Friendly character", description: "The cat character softens the first impression and lowers the emotional pressure of starting a journal entry." },
+        { id: "instant-clarity", title: "Gentle first tone", description: "Warm colors and open spacing make the first check-in feel closer to a conversation than a task." },
+      ],
+      visual: createHomeCheckinVisual("Daily Log AI conversation start screen"),
     },
     {
-      title: "Mood summary",
-      description: "The emotional tone of the day is translated into language that feels calm, readable, and useful later.",
+      id: "scene-dashboard",
+      eyebrow: "Scene 02",
+      title: "Mood analysis and auto-written journal",
+      description: "An automatically written journal, followed by mood analysis grounded in the same entry.",
+      cards: [
+        { id: "calendar-glance", title: "Date context", description: "The record stays anchored to a specific day, so it reads more like a daily log than a temporary note." },
+        { id: "recap-bubble", title: "Readable body copy", description: "A slightly longer text block gives the reflection enough room to feel like a real journal page." },
+        { id: "restrained-glow", title: "Bottom navigation", description: "Home, add, and archive actions remain visible so the next step after writing still feels obvious." },
+        { id: "return-value", title: "A screen worth revisiting", description: "Instead of closing out a finished entry, the layout frames it like a main view people can return to later." },
+      ],
+      visual: createHomeDiaryVisual("Daily Log completed mood journal and summary screen"),
     },
     {
-      title: "Reflection view",
-      description: "Entries stay connected to photos, notes, and summaries so revisiting the day feels intentional instead of messy.",
+      id: "scene-ai",
+      eyebrow: "Scene 03",
+      title: "Conversation-based schedule auto-save",
+      description: "Schedules generated through conversation also sync into the calendar automatically.",
+      cards: [
+        { id: "photo-reflection", title: "Month-based header", description: "The date context at the top frames the record as part of a longer flow, not a one-off input." },
+        { id: "ai-interpretation", title: "Saved moments", description: "Photos and text stay together so the atmosphere of the day comes back more vividly when reopened." },
+        { id: "next-step", title: "AI interpretation", description: "The summary does not erase the original note. It adds a clearer sentence for reading emotion and meaning back later." },
+        { id: "calm-storage", title: "Calm archive", description: "The screen values order over decoration, which keeps older records comfortable to scan over time." },
+      ],
+      visual: createHomeArchiveVisual("Daily Log photo record and AI interpretation screen"),
     },
     {
-      title: "Privacy guidance",
-      description: "Support and policy pages stay close to the install flow so users can understand the current release state before they commit.",
+      id: "scene-next-loop",
+      eyebrow: "Scene 04",
+      title: "Tomorrow recommendations shaped by personal taste",
+      description: "Even after the entry ends, the experience should keep leading into the next day.",
+      cards: [
+        { id: "small-suggestion", title: "Mood summary", description: "The leading emotion of the day appears first so the conclusion of the reflection settles quickly." },
+        { id: "resume-cue", title: "Pattern chart", description: "A small visual element makes the day’s state easier to read without pushing the screen into something overly complex." },
+        { id: "gentle-feedback", title: "Tomorrow’s suggestion", description: "While the feeling is still present, the page adds a next action people can realistically carry forward." },
+        { id: "habit-loop", title: "Single-screen wrap-up", description: "The core outcome stays grouped inside one surface so the end of the flow feels clean and complete." },
+      ],
+      visual: createHomeNextLoopVisual("Daily Log next action suggestion and reflection continuation screen"),
     },
   ],
-} as const;
-
-export const homeValueCardsEn = [
-  {
-    title: "The real value grows after the first check-in.",
+  values: {
+    eyebrow: "Why It Works",
+    title: "Even without explaining everything at once, the core value still reads quickly.",
     description:
-      "Daily Log matters more when it becomes something you reopen. Weekly patterns, repeated moods, and small changes over time make the product feel more useful with every entry.",
+      "The homepage does not try to list every feature. Instead, it compresses only the pieces that affect install confidence, repeat use, trust, and support flow.",
+    cards: [
+      {
+        id: "same-viewport",
+        title: "Install and understanding stay inside the same field of view.",
+        description:
+          "Rather than pushing download immediately, the page gives people enough context to understand both why the app matters and how its flow works.",
+        tone: "accent",
+      },
+      {
+        id: "short-copy-large-device",
+        title: "Shorter messages, larger device moments.",
+        description: "Each scene is reduced to one core message and one representative screen so the information does not scatter.",
+      },
+      {
+        id: "selective-emphasis",
+        title: "A bright base with selective emphasis.",
+        description: "All four scenes stay on the same bright surface, while contrast comes from the device screens and the rhythm of the spacing.",
+      },
+      {
+        id: "support-and-policy",
+        title: "Support and policy stay part of the product flow.",
+        description: "Support touchpoints, policy checks, and roadmap views all live inside the same navigation system to strengthen trust.",
+      },
+    ],
   },
-  {
-    title: "Weekly reflection rhythm",
-    description: "The product should feel like it connects one day to the next instead of leaving each entry isolated.",
-  },
-  {
-    title: "Suggestions that fit real life",
-    description: "The next step should feel small, practical, and grounded in the context of today rather than generic motivation.",
-  },
-  {
-    title: "Future improvements stay tied to lasting value",
+  finalCta: {
+    eyebrow: "Ready To Start",
+    title: "The landing reads quickly, and the actual install or support path moves even faster.",
     description:
-      "The roadmap prioritizes return value, trust, and the quality of reflection over surface-level decoration. That keeps the experience honest and easier to grow.",
+      "Right now the shortest route centers on the Android APK. More detailed guidance, support, and policy pages continue in the same design system on their own pages.",
+    primaryLabel: "Download Page",
+    secondaryLabel: "View Support",
+    footerLinks: [
+      { id: "roadmap", href: "/roadmap", label: "Roadmap" },
+      { id: "privacy", href: "/privacy", label: "Privacy Policy" },
+      { id: "terms", href: "/terms", label: "Terms of Service" },
+    ],
   },
-] as const;
-
-export const homeTrustPointsEn = [
-  {
-    title: "Direct Android APK access",
-    description: "The current release is available through a direct Android APK route so people can try the real product flow without extra detours.",
-  },
-  {
-    title: "Support and policy pages stay visible",
+  downloadSection: {
+    eyebrow: "Install Now",
+    title: "The homepage now lets people verify the install route and download the build right away.",
     description:
-      "The site does not push install alone. Privacy, terms, and support pages stay close to the main flow so the product feels transparent from the start.",
+      "The current public build is Android APK v1.0.14. The landing hands off directly into the download path, and the Vercel deployment flow is prepared to continue that same GitHub Release route.",
+    releaseLabel: "Latest Release",
+    updatedLabel: "Updated",
+    packageLabel: "Package",
   },
-  {
-    title: "Desktop and mobile handoff that makes sense",
-    description:
-      "Desktop visitors can move to mobile through QR, while mobile users see the install route first. The structure keeps both entry points clear without duplicating the whole page.",
-  },
-] as const;
+};

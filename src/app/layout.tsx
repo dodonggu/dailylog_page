@@ -1,6 +1,7 @@
 import type { Viewport } from "next";
 import { Noto_Sans_KR, Plus_Jakarta_Sans } from "next/font/google";
 
+import { DevEditOverlay } from "@/components/dev-edit-overlay";
 import { baseMetadata } from "@/lib/site-config";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ export default function RootLayout({
           <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top_left,rgba(255,239,225,0.72),transparent_34%),radial-gradient(circle_at_top_right,rgba(143,175,255,0.22),transparent_30%)]" />
           <div className="pointer-events-none absolute bottom-0 left-1/2 -z-10 h-[28rem] w-[78rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(122,99,255,0.08),transparent_60%)] blur-3xl" />
           {children}
+          <DevEditOverlay />
         </div>
       </body>
     </html>

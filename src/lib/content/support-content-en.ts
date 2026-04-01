@@ -1,117 +1,132 @@
-export const faqsEn = [
-  {
-    question: "Can I use Daily Log directly on the web?",
-    answer:
-      "The website is currently focused on product introduction, download guidance, support, and policy pages. The actual check-in, journaling, and analysis experience lives in the mobile app.",
-  },
-  {
-    question: "Which platform can I install right now?",
-    answer:
-      "The public Android APK is available today. TestFlight or App Store distribution for iPhone will be added as soon as the release path is ready.",
-  },
-  {
-    question: "What is the core experience of Daily Log?",
-    answer:
-      "The heart of Daily Log is a short conversational check-in that helps you organize the day, understand the emotional pattern, and leave with a clear next step.",
-  },
-  {
-    question: "How do you handle privacy and permissions?",
-    answer:
-      "Even in this demo phase, privacy and terms live on separate pages and permission-related guidance is kept distinct from the install flow so the product feels more transparent.",
-  },
-  {
-    question: "What should I do if Android shows an installation warning?",
-    answer:
-      "Android may show a security notice when you install an external APK. Follow the install guide on the download page and allow installation permissions for your browser or file manager if needed.",
-  },
-  {
-    question: "Where do I send support requests or account deletion requests?",
-    answer:
-      "You can contact the support email listed on the support page. It helps to include the install environment, device information, and the steps to reproduce the issue.",
-  },
-] as const;
+import type { SupportPageContent } from "@/lib/content/support-content";
 
-export const downloadNotesEn = [
-  {
-    title: "Android-first release",
+export const supportPageContentEn: SupportPageContent = {
+  metadata: {
+    title: "Support",
     description:
-      "The public hands-on build is currently centered on the Android APK. That keeps the path to the real product as short as possible.",
+      "This is the Daily Log support page for installation issues, account questions, privacy requests, and demo operation guidance.",
+    path: "/en/support",
+    locale: "en",
   },
-  {
-    title: "Desktop hands off through QR",
+  intro: {
+    eyebrow: "Support",
+    title: "A support hub that keeps installation, account, and policy questions in one flow.",
     description:
-      "Desktop visitors can move straight to mobile through a QR code while still seeing the install notes and release status on the same page.",
-  },
-  {
-    title: "Unavailable platforms stay explicit",
-    description:
-      "If a platform is not ready, the page shows that status clearly instead of presenting an empty or misleading install button.",
-  },
-] as const;
-
-export const installStepsEn = [
-  {
-    title: "1. Open the download page",
-    description: "Open it directly on your Android device, or scan the QR code on desktop to continue on mobile.",
-  },
-  {
-    title: "2. Download the APK",
-    description: "Use the Android APK button to download the current Daily Log build.",
-  },
-  {
-    title: "3. Allow installation permissions",
-    description: "On first install, Android may ask you to allow installs from your browser or file manager.",
-  },
-  {
-    title: "4. Launch the app and start the first check-in",
-    description: "Once the brief onboarding is complete, you can move right into the Daily Log check-in flow.",
-  },
-] as const;
-
-export const troubleshootingEn = [
-  {
-    title: "The file will not download",
-    description:
-      "Check your network connection and available storage first. It is also worth confirming that your mobile browser still has permission to download files.",
-  },
-  {
-    title: "The install button looks inactive",
-    description:
-      "On iPhone or on release channels that are not ready yet, the page shows status guidance instead of a real install action. Visit again from Android to see the live install flow.",
-  },
-  {
-    title: "The app does not open after installation",
-    description:
-      "Check the supported Android version first. If an older demo build is already installed, remove it and try again. If the issue continues, send the details through the support page.",
-  },
-] as const;
-
-export const supportTracksEn = [
-  {
-    title: "Installation issues",
-    description: "This covers the most common problems during download, APK permissions, and first launch.",
-    bullets: [
-      "Confirm that the device is running Android 10 or later",
-      "Allow installation permissions for the browser or file manager",
-      "Check storage space and the network connection",
+      "The support page is designed to read like an extension of the landing flow. It leads with the paths people look for most often and keeps heavier explanation only where it is needed.",
+    primaryLabel: "Contact by Email",
+    cards: [
+      {
+        id: "contact-card",
+        label: "Contact",
+        title: "Support channel",
+        description: "The contact email and response expectation are placed first so people can find them immediately.",
+      },
+      {
+        id: "before-you-send",
+        label: "Before you send",
+        title: "If you send a short summary of the issue, resolution usually gets much faster.",
+        description:
+          "Device model, Android version, screenshots, and reproduction steps are usually enough to improve the accuracy of the first reply.",
+        tone: "dark",
+      },
     ],
   },
-  {
-    title: "Account and sign-in",
-    description: "Questions around demo account creation, sign-in errors, and account deletion requests are handled here.",
-    bullets: [
-      "Double-check the email address and sign-in method",
-      "Look for duplicate sign-up attempts or input mistakes",
-      "Include account details when requesting account deletion",
+  tracks: {
+    eyebrow: "Support Tracks",
+    title: "Support flows are split by type so people can find the right one right away.",
+    description:
+      "Installation, account, and privacy-related requests are separated into cards instead of being mixed together on one long screen.",
+    items: [
+      {
+        id: "installation",
+        title: "Installation issues",
+        description: "This track quickly covers the problems that appear most often during download, APK permission, and first launch.",
+        bullets: [
+          "Confirm that the device is running Android 10 or later",
+          "Allow installation permissions for the browser or file manager",
+          "Check storage space and the network connection",
+        ],
+      },
+      {
+        id: "account",
+        title: "Account and sign-in",
+        description: "This covers demo account creation, sign-in failure, and account deletion requests in one place.",
+        bullets: [
+          "Check the registered email address and sign-in information",
+          "Look for duplicate sign-up attempts or typing mistakes",
+          "Include basic verification details when requesting account deletion",
+        ],
+      },
+      {
+        id: "privacy",
+        title: "Privacy and permissions",
+        description: "Sensitive topics such as notifications, microphone access, and privacy consent stay in a separate flow and connect back to the policy documents.",
+        bullets: [
+          "Explain why each permission is requested and when it is used",
+          "Keep the policy documents visible alongside the demo status",
+          "Make deletion requests and contact channels explicit",
+        ],
+      },
     ],
   },
-  {
-    title: "Privacy and permissions",
-    description: "Sensitive topics such as notifications, microphone access, and privacy consent should stay easy to follow and clearly documented.",
-    bullets: [
-      "Explain why each permission is requested and when it is used",
-      "Keep policy documents visible alongside the demo release status",
-      "Make deletion requests and contact channels easy to find",
+  bestContext: {
+    label: "Best context to include",
+    items: [
+      { id: "device-and-android", text: "Device model and Android version" },
+      { id: "reproduction-steps", text: "When the problem happened and the reproduction steps" },
+      { id: "screenshots", text: "A screenshot of the install screen or error message" },
+      { id: "ownership-details", text: "Basic verification details for privacy or account-related requests" },
     ],
   },
-] as const;
+  faq: {
+    label: "FAQ",
+    items: [
+      {
+        id: "web-availability",
+        question: "Can I use Daily Log directly on the web?",
+        answer:
+          "The website currently focuses on product introduction, download guidance, support, and policy pages. The actual check-in, journaling, and analysis experience is provided in the mobile app.",
+      },
+      {
+        id: "available-platform",
+        question: "Which platform can I install right now?",
+        answer:
+          "The public Android APK is available right now. TestFlight or App Store distribution for iPhone will be connected as soon as that release path is ready.",
+      },
+      {
+        id: "core-experience",
+        question: "What is the most important experience in Daily Log?",
+        answer:
+          "The core flow is a short conversational check-in that helps people organize the day, read the emotional pattern, and continue into one realistic next action. The product is focused less on raw recording and more on reflection that turns into change.",
+      },
+      {
+        id: "privacy-and-permissions",
+        question: "How do you handle privacy and permissions?",
+        answer:
+          "Even in the demo phase, privacy and terms live on separate pages. Permission requests are explained in a guidance flow that stays separate from the check-in experience itself.",
+      },
+      {
+        id: "apk-warning",
+        question: "What should I do if I see a warning during APK installation?",
+        answer:
+          "Android may show a security notice during external APK installation. Follow the install guide on the download page and allow installation permissions for your browser or file manager if needed.",
+      },
+      {
+        id: "account-deletion",
+        question: "Where should I send support requests or account deletion requests?",
+        answer:
+          "You can send them to the support email listed on this page. It helps a lot if you include the installation environment, device details, and the steps to reproduce the issue.",
+      },
+    ],
+  },
+  cta: {
+    eyebrow: "Next Step",
+    title: "Whether installation is blocked or an account request comes up, the next support step stays obvious.",
+    description:
+      "Support is treated as part of the installation and trust experience, not as a detached appendix after the product flow ends.",
+    primaryHref: "/download",
+    primaryLabel: "Back to Download",
+    secondaryHref: "/privacy",
+    secondaryLabel: "Open Privacy",
+  },
+};
